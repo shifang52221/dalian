@@ -33,9 +33,9 @@ describe("premium shell design", () => {
     expect(globalCss).toContain(".navbar-brand {");
     expect(globalCss).toContain("padding: 12px 0;");
     expect(globalCss).toContain("border-radius: 0;");
-    expect(globalCss).toContain(".navbar-collapse.is-open::before {");
-    expect(globalCss).toContain("inset: 0 calc(50% - 50vw);");
-    expect(globalCss).toContain("pointer-events: none;");
+    expect(globalCss).toContain(".navbar-collapse.is-open {");
+    expect(globalCss).toContain("background: rgba(22, 58, 89, 0.98);");
+    expect(globalCss).toContain("box-shadow: 0 20px 34px rgba(8, 24, 40, 0.18);");
     expect(globalCss).toContain(".hero--immersive {");
     expect(globalCss).toContain(".site-header {");
     expect(globalCss).toContain("position: fixed;");
