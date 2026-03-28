@@ -3,13 +3,14 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 describe("contact map gaode default", () => {
-  it("uses a Baidu static map while keeping address-based external actions", () => {
+  it("uses a local static map while keeping address-based external actions", () => {
     const component = readFileSync(
       resolve("f:/www/www13dalian/src/components/home/ContactSection.astro"),
       "utf8",
     );
 
-    expect(component).toContain("api.map.baidu.com/staticimage/v2");
+    expect(component).toContain('/images/factory-location-map.svg');
+    expect(component).not.toContain("api.map.baidu.com/staticimage/v2");
     expect(component).toContain("map-embed__media");
     expect(component).toContain("map-embed__pin");
     expect(component).toContain("https://www.amap.com/search?query=");

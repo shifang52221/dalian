@@ -1,6 +1,9 @@
 import type { Locale } from "../../lib/i18n";
+import type { SiteSettingsView } from "../../types/content";
+import { getSiteCopy } from "../site-copy";
 
 export interface HomeContent {
+  siteSettings: SiteSettingsView;
   hero: {
     eyebrow: string;
     title: string;
@@ -494,7 +497,15 @@ const enterpriseAboutOverrides: Record<Locale, HomeContent["about"]> = {
 };
 
 export function getFallbackHomeContent(locale: Locale) {
+  const siteCopy = getSiteCopy(locale);
+
   return {
+    siteSettings: {
+      companyName: siteCopy.companyName,
+      address: siteCopy.footer.address,
+      phone: siteCopy.footer.phone,
+      email: siteCopy.footer.email,
+    },
     ...homeContent[locale],
     about: enterpriseAboutOverrides[locale],
     testimonials: polishedTestimonials[locale],

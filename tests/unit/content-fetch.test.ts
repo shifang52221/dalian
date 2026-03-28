@@ -334,6 +334,12 @@ describe("content-api fetchers", () => {
       { label: "手机", value: "400-800-1234" },
       { label: "邮箱", value: "cms@example.com" },
     ]);
+    expect(result.siteSettings).toEqual({
+      companyName: "CMS 公司",
+      address: "大连市测试地址",
+      phone: "400-800-1234",
+      email: "cms@example.com",
+    });
   });
 
   it("sorts capabilities and product cases by sort_order", async () => {
@@ -487,5 +493,48 @@ describe("content-api fetchers", () => {
     });
 
     vi.useRealTimers();
+  });
+
+  it("reuses cached homepage content within the cache window for the same client and locale", async () => {
+    const counts: Record<string, number> = {};
+    const client = {
+      collection(name: string) {
+        return {
+          async getFullList() {
+            counts[name] = (counts[name] ?? 0) + 1;
+
+            if (name === "news") {
+              return [
+                {
+                  slug: "cached-news",
+                  published_at: "2026-03-16",
+                  title_zh: "缓存新闻",
+                  title_ja: "キャッシュニュース",
+                  summary_zh: "摘要",
+                  summary_ja: "概要",
+                  content_zh: "正文",
+                  content_ja: "本文",
+                },
+              ];
+            }
+
+            return [];
+          },
+        };
+      },
+    };
+
+    await getHomePageContent("zh", client);
+    await getHomePageContent("zh", client);
+
+    expect(counts.site_settings).toBe(1);
+    expect(counts.home_sections).toBe(1);
+    expect(counts.home_hero).toBe(1);
+    expect(counts.home_about).toBe(1);
+    expect(counts.capabilities).toBe(1);
+    expect(counts.advantages).toBe(1);
+    expect(counts.product_cases).toBe(1);
+    expect(counts.cooperation_highlights).toBe(1);
+    expect(counts.news).toBe(1);
   });
 });

@@ -32,13 +32,9 @@ const encodedAddress = encodeURIComponent(addressDetail);
 const amapGeoBounds = "121.2190244|38.9027021|121.2582175|38.9235801";
 const amapSearchUrl =
   `https://www.amap.com/search?query=${encodedAddress}&city=210200&geoobj=${amapGeoBounds}&zoom=15`;
-const baiduMapAk = "WPikkqUAOD9fSQMXnXNkQ2o1R6xdH4O6";
-const baiduFallbackLat = 38.913141;
-const baiduFallbackLng = 121.238621;
 const companyName =
   locale === "ja" ? "\u5927\u9023\u535a\u6052\u65b0\u6280\u8853\u6709\u9650\u516c\u53f8" : "\u5927\u8fde\u535a\u6052\u65b0\u6280\u672f\u6709\u9650\u516c\u53f8";
-const baiduStaticMapUrl =
-  `https://api.map.baidu.com/staticimage/v2?ak=${baiduMapAk}&center=${baiduFallbackLng},${baiduFallbackLat}&width=960&height=420&zoom=15&markers=${baiduFallbackLng},${baiduFallbackLat}&markerStyles=l,0x2c6ea3,0xffffff`;
+const localMapImageUrl = "/images/factory-location-map.svg";
 const amapUrl = amapSearchUrl;
 const baiduMapUrl = `https://map.baidu.com/search/${encodedAddress}`;
 const mapPinLabel = locale === "ja" ? "Factory location" : "\u5de5\u5382\u4f4d\u7f6e\u793a\u610f";
@@ -152,9 +148,10 @@ const mapNote =
       <div class="map-embed" aria-label={locale === "ja" ? "Company location map" : "Company location map"}>
         <img
           class="map-embed__media"
-          src={baiduStaticMapUrl}
+          src={localMapImageUrl}
           alt={`${companyName} ${mapPinLabel}`}
           loading="lazy"
+          decoding="async"
           width="960"
           height="420"
         />

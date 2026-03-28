@@ -78,6 +78,7 @@ After running `npm run cms:setup`, verify these collections exist in PocketBase:
 - `npm run cms:check`, `npm run cms:setup`, and `npm run cms:seed` automatically read the project-root `.env` file before falling back to shell-provided environment variables
 - Astro blocks cross-site form submissions by default, so API verification should be done from the site itself or with a matching same-origin request setup
 - This workspace currently does not expose a `.git` repository, so git-based history and branch checks are unavailable here
+- Daily CMS publishing guide for operators: [cms-publishing-guide.md](/f:/www/www13dalian/docs/cms-publishing-guide.md)
 
 ## Recommended Next Steps
 

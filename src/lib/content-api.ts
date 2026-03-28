@@ -29,6 +29,17 @@ interface ContentClient {
 }
 
 const CMS_REQUEST_TIMEOUT_MS = 1200;
+const CMS_CACHE_TTL_MS = 30_000;
+
+interface CachedContentValue<T> {
+  expiresAt: number;
+  promise: Promise<T>;
+}
+
+const contentCache = new WeakMap<
+  ContentClient,
+  Map<string, CachedContentValue<unknown>>
+>();
 
 function isPublished(record: Record<string, unknown>) {
   return record.is_published !== false;
@@ -251,6 +262,41 @@ function withCmsTimeout<T>(promise: Promise<T>, timeoutMs = CMS_REQUEST_TIMEOUT_
   ]);
 }
 
+function getCachedContent<T>(
+  client: ContentClient,
+  key: string,
+  loader: () => Promise<T>,
+  ttlMs = CMS_CACHE_TTL_MS,
+) {
+  const now = Date.now();
+  let clientCache = contentCache.get(client);
+
+  if (!clientCache) {
+    clientCache = new Map<string, CachedContentValue<unknown>>();
+    contentCache.set(client, clientCache);
+  }
+
+  const cached = clientCache.get(key) as CachedContentValue<T> | undefined;
+  if (cached && cached.expiresAt > now) {
+    return cached.promise;
+  }
+
+  const promise = loader().catch((error) => {
+    const current = clientCache.get(key);
+    if (current?.promise === promise) {
+      clientCache.delete(key);
+    }
+    throw error;
+  });
+
+  clientCache.set(key, {
+    expiresAt: now + ttlMs,
+    promise,
+  });
+
+  return promise;
+}
+
 async function getCollectionList(
   client: ContentClient,
   name: string,
@@ -328,260 +374,267 @@ export async function getSiteSettings(
   locale: Locale,
   client: ContentClient = pb,
 ): Promise<SiteSettingsView> {
-  try {
-    const siteSettings = await getCollectionList(client, "site_settings");
-    return buildSiteSettings(locale, siteSettings[0] as SiteSettingsRecord | undefined);
-  } catch {
-    return buildSiteSettings(locale);
-  }
+  return getCachedContent(client, `site-settings:${locale}`, async () => {
+    try {
+      const siteSettings = await getCollectionList(client, "site_settings");
+      return buildSiteSettings(locale, siteSettings[0] as SiteSettingsRecord | undefined);
+    } catch {
+      return buildSiteSettings(locale);
+    }
+  });
 }
 
 export async function getHomePageContent(
   locale: Locale,
   client: ContentClient = pb,
 ): Promise<HomeContent> {
-  const fallback = getFallbackHomeContent(locale);
+  return getCachedContent(client, `home:${locale}`, async () => {
+    const fallback = getFallbackHomeContent(locale);
 
-  try {
-    const [
-      siteSettings,
-      sections,
-      heroRecords,
-      aboutRecords,
-      capabilities,
-      advantages,
-      productCases,
-      cooperationHighlights,
-    ] = await Promise.all([
-      getCollectionList(client, "site_settings"),
-      getCollectionList(client, "home_sections"),
-      getCollectionList(client, "home_hero"),
-      getCollectionList(client, "home_about"),
-      getCollectionList(client, "capabilities"),
-      getCollectionList(client, "advantages"),
-      getCollectionList(client, "product_cases"),
-      getCollectionList(client, "cooperation_highlights"),
-    ]);
+    try {
+      const [
+        siteSettings,
+        sections,
+        heroRecords,
+        aboutRecords,
+        capabilities,
+        advantages,
+        productCases,
+        cooperationHighlights,
+      ] = await Promise.all([
+        getCollectionList(client, "site_settings"),
+        getCollectionList(client, "home_sections"),
+        getCollectionList(client, "home_hero"),
+        getCollectionList(client, "home_about"),
+        getCollectionList(client, "capabilities"),
+        getCollectionList(client, "advantages"),
+        getCollectionList(client, "product_cases"),
+        getCollectionList(client, "cooperation_highlights"),
+      ]);
 
-    const result: HomeContent = structuredClone(fallback);
-    const sectionMap = new Map(
-      sections.filter(isPublished).map((section) => [
-        String(section.key ?? ""),
-        mapLocaleRecord(section, locale) as Record<string, unknown>,
-      ]),
-    );
+      const result: HomeContent = structuredClone(fallback);
+      const sectionMap = new Map(
+        sections.filter(isPublished).map((section) => [
+          String(section.key ?? ""),
+          mapLocaleRecord(section, locale) as Record<string, unknown>,
+        ]),
+      );
 
-    const heroSection = sectionMap.get("hero");
-    if (heroSection?.title) {
-      result.hero.title = String(heroSection.title);
+      const heroSection = sectionMap.get("hero");
+      if (heroSection?.title) {
+        result.hero.title = String(heroSection.title);
+      }
+      if (heroSection?.summary) {
+        result.hero.description = String(heroSection.summary);
+      }
+
+      const heroRecord = getFirstPublishedRecord(heroRecords) as
+        | HomeHeroRecord
+        | undefined;
+      if (heroRecord) {
+        const localizedHero = mapLocaleRecord(heroRecord, locale) as Record<string, unknown>;
+        const highlights = parseStringArray(locale === "ja" ? heroRecord.highlights_ja : heroRecord.highlights_zh);
+        const stats = parseStatArray(locale === "ja" ? heroRecord.stats_ja : heroRecord.stats_zh);
+
+        if (localizedHero.eyebrow) {
+          result.hero.eyebrow = String(localizedHero.eyebrow);
+        }
+        if (localizedHero.title) {
+          result.hero.title = String(localizedHero.title);
+        }
+        if (localizedHero.description) {
+          result.hero.description = String(localizedHero.description);
+        }
+        if (locale === "ja" ? heroRecord.primary_cta_label_ja : heroRecord.primary_cta_label_zh) {
+          result.hero.primaryCta = String(
+            locale === "ja" ? heroRecord.primary_cta_label_ja : heroRecord.primary_cta_label_zh,
+          );
+        }
+        if (locale === "ja" ? heroRecord.secondary_cta_label_ja : heroRecord.secondary_cta_label_zh) {
+          result.hero.secondaryCta = String(
+            locale === "ja" ? heroRecord.secondary_cta_label_ja : heroRecord.secondary_cta_label_zh,
+          );
+        }
+        if (highlights) {
+          result.hero.highlights = highlights;
+        }
+        if (stats) {
+          result.hero.stats = stats;
+        }
+      }
+
+      const aboutSection = sectionMap.get("about");
+      if (aboutSection?.title) {
+        result.about.title = String(aboutSection.title);
+      }
+      if (aboutSection?.summary) {
+        result.about.description = String(aboutSection.summary);
+      }
+
+      const aboutRecord = getFirstPublishedRecord(aboutRecords) as
+        | HomeAboutRecord
+        | undefined;
+      if (aboutRecord) {
+        const localizedAbout = mapLocaleRecord(aboutRecord, locale) as Record<string, unknown>;
+        const points = parseStringArray(locale === "ja" ? aboutRecord.points_ja : aboutRecord.points_zh);
+        const stats = parseStatArray(locale === "ja" ? aboutRecord.stats_ja : aboutRecord.stats_zh);
+
+        if (localizedAbout.eyebrow) {
+          result.about.eyebrow = String(localizedAbout.eyebrow);
+        }
+        if (localizedAbout.title) {
+          result.about.title = String(localizedAbout.title);
+        }
+        if (localizedAbout.description) {
+          result.about.description = String(localizedAbout.description);
+        }
+        if (points) {
+          result.about.points = points;
+        }
+        if (aboutRecord.badge_value || localizedAbout.badge_label) {
+          result.about.badge = {
+            value: String(aboutRecord.badge_value ?? result.about.badge.value),
+            label: String(localizedAbout.badge_label ?? result.about.badge.label),
+          };
+        }
+        if (stats) {
+          result.about.stats = stats;
+        }
+      }
+
+      if (capabilities.length > 0) {
+        result.capabilities.items = sortBySortOrder(capabilities.filter(isPublished)).map((item) => {
+          const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
+          return {
+            title: String(localized.title ?? ""),
+            description: String(localized.description ?? ""),
+          };
+        });
+      }
+
+      if (advantages.length > 0) {
+        result.advantages.items = sortBySortOrder(advantages.filter(isPublished)).map((item) => {
+          const localized = mapLocaleRecord(item as AdvantageRecord, locale) as Record<
+            string,
+            unknown
+          >;
+          return {
+            title: String(localized.title ?? ""),
+            description: String(localized.description ?? ""),
+          };
+        });
+      }
+
+      if (productCases.length > 0) {
+        result.projects.categories = sortBySortOrder(productCases.filter(isPublished)).map((item) => {
+          const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
+          const tags = locale === "ja" ? item.tags_ja : item.tags_zh;
+          return {
+            title: String(localized.category ?? ""),
+            description: String(localized.description ?? ""),
+            tags: Array.isArray(tags) ? tags.map((tag) => String(tag)) : [],
+          };
+        });
+      }
+
+      if (cooperationHighlights.length > 0) {
+        result.testimonials.items = sortBySortOrder(
+          cooperationHighlights.filter(isPublished),
+        ).map((item) => {
+          const localized = mapLocaleRecord(
+            item as CooperationHighlightRecord,
+            locale,
+          ) as Record<string, unknown>;
+          return {
+            name: String(localized.name ?? ""),
+            role: String(localized.role ?? ""),
+            quote: String(localized.quote ?? ""),
+          };
+        });
+      }
+
+      const settings = siteSettings[0] as SiteSettingsRecord | undefined;
+      const siteSettingsView = buildSiteSettings(locale, settings);
+      result.siteSettings = siteSettingsView;
+
+      result.contact.details = [
+        {
+          label: result.contact.details[0]?.label ?? "",
+          value: siteSettingsView.address,
+        },
+        {
+          label: result.contact.details[1]?.label ?? "",
+          value: siteSettingsView.phone,
+        },
+        {
+          label: result.contact.details[2]?.label ?? "",
+          value: siteSettingsView.email,
+        },
+      ];
+
+      const newsItems = await getNewsList(locale, client);
+      if (newsItems.length > 0) {
+        result.news.items = newsItems.slice(0, 3).map((item) => ({
+          slug: item.slug,
+          title: item.title,
+          summary: item.summary,
+          meta: item.date,
+        }));
+      }
+
+      return result;
+    } catch {
+      return fallback;
     }
-    if (heroSection?.summary) {
-      result.hero.description = String(heroSection.summary);
-    }
-
-    const heroRecord = getFirstPublishedRecord(heroRecords) as
-      | HomeHeroRecord
-      | undefined;
-    if (heroRecord) {
-      const localizedHero = mapLocaleRecord(heroRecord, locale) as Record<string, unknown>;
-      const highlights = parseStringArray(locale === "ja" ? heroRecord.highlights_ja : heroRecord.highlights_zh);
-      const stats = parseStatArray(locale === "ja" ? heroRecord.stats_ja : heroRecord.stats_zh);
-
-      if (localizedHero.eyebrow) {
-        result.hero.eyebrow = String(localizedHero.eyebrow);
-      }
-      if (localizedHero.title) {
-        result.hero.title = String(localizedHero.title);
-      }
-      if (localizedHero.description) {
-        result.hero.description = String(localizedHero.description);
-      }
-      if (locale === "ja" ? heroRecord.primary_cta_label_ja : heroRecord.primary_cta_label_zh) {
-        result.hero.primaryCta = String(
-          locale === "ja" ? heroRecord.primary_cta_label_ja : heroRecord.primary_cta_label_zh,
-        );
-      }
-      if (locale === "ja" ? heroRecord.secondary_cta_label_ja : heroRecord.secondary_cta_label_zh) {
-        result.hero.secondaryCta = String(
-          locale === "ja" ? heroRecord.secondary_cta_label_ja : heroRecord.secondary_cta_label_zh,
-        );
-      }
-      if (highlights) {
-        result.hero.highlights = highlights;
-      }
-      if (stats) {
-        result.hero.stats = stats;
-      }
-    }
-
-    const aboutSection = sectionMap.get("about");
-    if (aboutSection?.title) {
-      result.about.title = String(aboutSection.title);
-    }
-    if (aboutSection?.summary) {
-      result.about.description = String(aboutSection.summary);
-    }
-
-    const aboutRecord = getFirstPublishedRecord(aboutRecords) as
-      | HomeAboutRecord
-      | undefined;
-    if (aboutRecord) {
-      const localizedAbout = mapLocaleRecord(aboutRecord, locale) as Record<string, unknown>;
-      const points = parseStringArray(locale === "ja" ? aboutRecord.points_ja : aboutRecord.points_zh);
-      const stats = parseStatArray(locale === "ja" ? aboutRecord.stats_ja : aboutRecord.stats_zh);
-
-      if (localizedAbout.eyebrow) {
-        result.about.eyebrow = String(localizedAbout.eyebrow);
-      }
-      if (localizedAbout.title) {
-        result.about.title = String(localizedAbout.title);
-      }
-      if (localizedAbout.description) {
-        result.about.description = String(localizedAbout.description);
-      }
-      if (points) {
-        result.about.points = points;
-      }
-      if (aboutRecord.badge_value || localizedAbout.badge_label) {
-        result.about.badge = {
-          value: String(aboutRecord.badge_value ?? result.about.badge.value),
-          label: String(localizedAbout.badge_label ?? result.about.badge.label),
-        };
-      }
-      if (stats) {
-        result.about.stats = stats;
-      }
-    }
-
-    if (capabilities.length > 0) {
-      result.capabilities.items = sortBySortOrder(capabilities.filter(isPublished)).map((item) => {
-        const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
-        return {
-          title: String(localized.title ?? ""),
-          description: String(localized.description ?? ""),
-        };
-      });
-    }
-
-    if (advantages.length > 0) {
-      result.advantages.items = sortBySortOrder(advantages.filter(isPublished)).map((item) => {
-        const localized = mapLocaleRecord(item as AdvantageRecord, locale) as Record<
-          string,
-          unknown
-        >;
-        return {
-          title: String(localized.title ?? ""),
-          description: String(localized.description ?? ""),
-        };
-      });
-    }
-
-    if (productCases.length > 0) {
-      result.projects.categories = sortBySortOrder(productCases.filter(isPublished)).map((item) => {
-        const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
-        const tags = locale === "ja" ? item.tags_ja : item.tags_zh;
-        return {
-          title: String(localized.category ?? ""),
-          description: String(localized.description ?? ""),
-          tags: Array.isArray(tags) ? tags.map((tag) => String(tag)) : [],
-        };
-      });
-    }
-
-    if (cooperationHighlights.length > 0) {
-      result.testimonials.items = sortBySortOrder(
-        cooperationHighlights.filter(isPublished),
-      ).map((item) => {
-        const localized = mapLocaleRecord(
-          item as CooperationHighlightRecord,
-          locale,
-        ) as Record<string, unknown>;
-        return {
-          name: String(localized.name ?? ""),
-          role: String(localized.role ?? ""),
-          quote: String(localized.quote ?? ""),
-        };
-      });
-    }
-
-    const settings = siteSettings[0] as SiteSettingsRecord | undefined;
-    const siteSettingsView = buildSiteSettings(locale, settings);
-
-    result.contact.details = [
-      {
-        label: result.contact.details[0]?.label ?? "",
-        value: siteSettingsView.address,
-      },
-      {
-        label: result.contact.details[1]?.label ?? "",
-        value: siteSettingsView.phone,
-      },
-      {
-        label: result.contact.details[2]?.label ?? "",
-        value: siteSettingsView.email,
-      },
-    ];
-
-    const newsItems = await getNewsList(locale, client);
-    if (newsItems.length > 0) {
-      result.news.items = newsItems.slice(0, 3).map((item) => ({
-        slug: item.slug,
-        title: item.title,
-        summary: item.summary,
-        meta: item.date,
-      }));
-    }
-
-    return result;
-  } catch {
-    return fallback;
-  }
+  });
 }
 
 export async function getNewsList(
   locale: Locale,
   client: ContentClient = pb,
 ): Promise<NewsItem[]> {
-  const fallback = getFallbackNews(locale);
+  return getCachedContent(client, `news:${locale}`, async () => {
+    const fallback = getFallbackNews(locale);
 
-  try {
-    const records = (
-      await getCollectionList(client, "news", {
-        sort: "-published_at",
-      })
-    ).filter(isPublished);
+    try {
+      const records = (
+        await getCollectionList(client, "news", {
+          sort: "-published_at",
+        })
+      ).filter(isPublished);
 
-    if (records.length === 0) {
+      if (records.length === 0) {
+        return fallback;
+      }
+
+      return records.map((record) => {
+        const localized = mapLocaleRecord(record, locale) as Record<string, unknown>;
+        const imageSrc = buildMediaProxyUrl(
+          "news",
+          record.id ?? record.slug,
+          record.cover_image,
+        );
+        const parsedContent = parseNewsContent(localized.content);
+
+        return {
+          slug: String(record.slug ?? ""),
+          date: formatPublishedDate(record.published_at),
+          title: String(localized.title ?? ""),
+          summary: normalizeSummaryText(localized.summary),
+          content: parsedContent.content,
+          contentHtml: parsedContent.contentHtml,
+          image: imageSrc
+            ? {
+                src: imageSrc,
+                alt: `${String(localized.title ?? "")} cover image`,
+              }
+            : undefined,
+        };
+      });
+    } catch {
       return fallback;
     }
-
-    return records.map((record) => {
-      const localized = mapLocaleRecord(record, locale) as Record<string, unknown>;
-      const imageSrc = buildMediaProxyUrl(
-        "news",
-        record.id ?? record.slug,
-        record.cover_image,
-      );
-      const parsedContent = parseNewsContent(localized.content);
-
-      return {
-        slug: String(record.slug ?? ""),
-        date: formatPublishedDate(record.published_at),
-        title: String(localized.title ?? ""),
-        summary: normalizeSummaryText(localized.summary),
-        content: parsedContent.content,
-        contentHtml: parsedContent.contentHtml,
-        image: imageSrc
-          ? {
-              src: imageSrc,
-              alt: `${String(localized.title ?? "")} cover image`,
-            }
-          : undefined,
-      };
-    });
-  } catch {
-    return fallback;
-  }
+  });
 }
 
 export async function getNewsItem(

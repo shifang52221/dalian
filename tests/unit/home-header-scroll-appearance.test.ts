@@ -22,4 +22,12 @@ describe("home header scroll appearance", () => {
     expect(stylesheet).toContain("transform: translateY(-18px);");
     expect(stylesheet).toContain("opacity: 1;");
   });
+
+  it("does not block homepage scrolling behind a forced preloader delay", () => {
+    const script = readFileSync(resolve("f:/www/www13dalian/src/scripts/site-effects.js"), "utf8");
+
+    expect(script).not.toContain('document.body.style.overflow = "hidden";');
+    expect(script).not.toContain('}, reduceMotion ? 100 : 900);');
+    expect(script).not.toContain('document.body.style.overflow = "visible";');
+  });
 });

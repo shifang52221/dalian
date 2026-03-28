@@ -27,7 +27,7 @@ const mosaicItems = images.slice(1).map((image, index) => ({
 
     <div class="projects-feature" data-reveal>
       <div class="projects-feature__media">
-        {leadImage && <img src={leadImage.src} alt={leadImage.alt} />}
+        {leadImage && <img src={leadImage.src} alt={leadImage.alt} loading="lazy" decoding="async" />}
       </div>
       <div class="projects-feature__content">
         <span class="projects-feature__eyebrow">Featured Capability</span>
@@ -47,7 +47,7 @@ const mosaicItems = images.slice(1).map((image, index) => ({
       {
         mosaicItems.map((item, index) => (
           <article class="gallery-item gallery-item--reference" data-reveal data-delay={`${(index + 1) * 100}`}>
-            <img class="gallery-media" src={item.image.src} alt={item.image.alt} />
+            <img class="gallery-media" src={item.image.src} alt={item.image.alt} loading="lazy" decoding="async" />
             <div class="gallery-mini-label">
               <span>{item.category.title}</span>
             </div>

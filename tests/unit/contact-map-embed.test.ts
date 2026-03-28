@@ -15,7 +15,8 @@ describe("contact map embed", () => {
 
     expect(component).toContain("map-embed");
     expect(component).toContain("map-embed__media");
-    expect(component).toContain("api.map.baidu.com/staticimage/v2");
+    expect(component).toContain('/images/factory-location-map.svg');
+    expect(component).not.toContain("api.map.baidu.com/staticimage/v2");
     expect(component).toContain("map-embed__pin");
     expect(component).toContain("https://www.amap.com/search?query=");
     expect(component).toContain("map.baidu.com");

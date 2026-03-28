@@ -22,7 +22,7 @@ const aboutParagraphs = content.description.split("\n\n").filter(Boolean);
   <div class="section__inner">
     <div class="about-grid about-grid--reference">
       <div class="about-image-card about-image-card--reference about-image-card--dalian" data-reveal>
-        {image && <img src={image.src} alt={image.alt} />}
+        {image && <img src={image.src} alt={image.alt} loading="lazy" decoding="async" />}
       </div>
 
       <div class="about-content-card about-content-card--reference" data-reveal data-delay="100">

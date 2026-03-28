@@ -305,21 +305,25 @@ function setupCapabilityPreview() {
   });
 }
 
-window.addEventListener("load", () => {
+function dismissPreloader() {
   if (!preloader) {
     return;
   }
 
-  setTimeout(() => {
-    preloader.classList.add("fade-out");
-    setTimeout(() => {
-      preloader.remove();
-      document.body.style.overflow = "visible";
-    }, 500);
-  }, reduceMotion ? 100 : 900);
-});
+  preloader.classList.add("fade-out");
+  window.setTimeout(() => {
+    preloader.remove();
+  }, reduceMotion ? 0 : 180);
+}
 
-document.body.style.overflow = "hidden";
+if (document.readyState === "complete") {
+  window.requestAnimationFrame(dismissPreloader);
+} else {
+  window.addEventListener("load", () => {
+    window.requestAnimationFrame(dismissPreloader);
+  }, { once: true });
+}
+
 setupAnchorScroll();
 setupScrollTop();
 setupSectionObserver();
