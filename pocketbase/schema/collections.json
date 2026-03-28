@@ -12,7 +12,11 @@
       { "name": "phone", "type": "text" },
       { "name": "email", "type": "email" },
       { "name": "address_zh", "type": "text" },
-      { "name": "address_ja", "type": "text" }
+      { "name": "address_ja", "type": "text" },
+      { "name": "copyright_zh", "type": "text" },
+      { "name": "copyright_ja", "type": "text" },
+      { "name": "icp", "type": "text" },
+      { "name": "map_url", "type": "text" }
     ]
   },
   {
@@ -32,9 +36,62 @@
     ]
   },
   {
-    "name": "capabilities",
-    "listRule": "",
-    "viewRule": "",
+    "name": "home_hero",
+    "listRule": "is_published = true",
+    "viewRule": "is_published = true",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "eyebrow_zh", "type": "text" },
+      { "name": "eyebrow_ja", "type": "text" },
+      { "name": "title_zh", "type": "text" },
+      { "name": "title_ja", "type": "text" },
+      { "name": "description_zh", "type": "editor" },
+      { "name": "description_ja", "type": "editor" },
+      { "name": "primary_cta_label_zh", "type": "text" },
+      { "name": "primary_cta_label_ja", "type": "text" },
+      { "name": "primary_cta_href", "type": "text" },
+      { "name": "secondary_cta_label_zh", "type": "text" },
+      { "name": "secondary_cta_label_ja", "type": "text" },
+      { "name": "secondary_cta_href", "type": "text" },
+      { "name": "highlights_zh", "type": "json" },
+      { "name": "highlights_ja", "type": "json" },
+      { "name": "stats_zh", "type": "json" },
+      { "name": "stats_ja", "type": "json" },
+      { "name": "is_published", "type": "bool" }
+    ]
+  },
+  {
+    "name": "home_about",
+    "listRule": "is_published = true",
+    "viewRule": "is_published = true",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "eyebrow_zh", "type": "text" },
+      { "name": "eyebrow_ja", "type": "text" },
+      { "name": "title_zh", "type": "text" },
+      { "name": "title_ja", "type": "text" },
+      { "name": "description_zh", "type": "editor" },
+      { "name": "description_ja", "type": "editor" },
+      { "name": "points_zh", "type": "json" },
+      { "name": "points_ja", "type": "json" },
+      { "name": "badge_value", "type": "text" },
+      { "name": "badge_label_zh", "type": "text" },
+      { "name": "badge_label_ja", "type": "text" },
+      { "name": "stats_zh", "type": "json" },
+      { "name": "stats_ja", "type": "json" },
+      { "name": "image_alt_zh", "type": "text" },
+      { "name": "image_alt_ja", "type": "text" },
+      { "name": "is_published", "type": "bool" }
+    ]
+  },
+  {
+    "name": "advantages",
+    "listRule": "is_published = true",
+    "viewRule": "is_published = true",
     "createRule": null,
     "updateRule": null,
     "deleteRule": null,
@@ -43,13 +100,32 @@
       { "name": "title_ja", "type": "text" },
       { "name": "description_zh", "type": "editor" },
       { "name": "description_ja", "type": "editor" },
-      { "name": "sort_order", "type": "number" }
+      { "name": "sort_order", "type": "number" },
+      { "name": "is_published", "type": "bool" }
+    ]
+  },
+  {
+    "name": "capabilities",
+    "listRule": "is_published = true",
+    "viewRule": "is_published = true",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "title_zh", "type": "text" },
+      { "name": "title_ja", "type": "text" },
+      { "name": "description_zh", "type": "editor" },
+      { "name": "description_ja", "type": "editor" },
+      { "name": "icon_key", "type": "text" },
+      { "name": "preview_group", "type": "text" },
+      { "name": "sort_order", "type": "number" },
+      { "name": "is_published", "type": "bool" }
     ]
   },
   {
     "name": "product_cases",
-    "listRule": "",
-    "viewRule": "",
+    "listRule": "is_published = true",
+    "viewRule": "is_published = true",
     "createRule": null,
     "updateRule": null,
     "deleteRule": null,
@@ -60,7 +136,26 @@
       { "name": "description_ja", "type": "editor" },
       { "name": "tags_zh", "type": "json" },
       { "name": "tags_ja", "type": "json" },
-      { "name": "sort_order", "type": "number" }
+      { "name": "sort_order", "type": "number" },
+      { "name": "is_published", "type": "bool" }
+    ]
+  },
+  {
+    "name": "cooperation_highlights",
+    "listRule": "is_published = true",
+    "viewRule": "is_published = true",
+    "createRule": null,
+    "updateRule": null,
+    "deleteRule": null,
+    "fields": [
+      { "name": "name_zh", "type": "text" },
+      { "name": "name_ja", "type": "text" },
+      { "name": "role_zh", "type": "text" },
+      { "name": "role_ja", "type": "text" },
+      { "name": "quote_zh", "type": "editor" },
+      { "name": "quote_ja", "type": "editor" },
+      { "name": "sort_order", "type": "number" },
+      { "name": "is_published", "type": "bool" }
     ]
   },
   {

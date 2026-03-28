@@ -51,8 +51,26 @@ Run these checks after environment variables are configured:
 
 - Homepage and news pages prefer PocketBase content and fall back to local content if PocketBase is unavailable
 - Header company name, footer contact info, and homepage contact details now consume `site_settings`
-- `capabilities` and `product_cases` are rendered by `sort_order`
+- `home_hero` controls the hero eyebrow, title, description, CTA labels, highlights, and stat rows
+- `home_about` controls the company introduction title, body, points, badge, and stat rows
+- `advantages`, `capabilities`, `product_cases`, and `cooperation_highlights` are rendered by `sort_order`
 - News and homepage section visibility follow `is_published`
+- `news` supports the `cover_image` file field after production schema sync
+
+## CMS Collections To Verify
+
+After running `npm run cms:setup`, verify these collections exist in PocketBase:
+
+- `site_settings`
+- `home_sections`
+- `home_hero`
+- `home_about`
+- `advantages`
+- `capabilities`
+- `product_cases`
+- `cooperation_highlights`
+- `news`
+- `messages`
 
 ## Known Operational Notes
 
@@ -64,6 +82,6 @@ Run these checks after environment variables are configured:
 ## Recommended Next Steps
 
 1. Fill real production PocketBase credentials into the deployment environment
-2. Verify seeded CMS content and publication flags in PocketBase admin
-3. Test the contact flow from the real deployed domain
-4. Add a git repository or reconnect the existing one before the next round of changes
+2. Run `npm run cms:setup` on production after every schema-related deployment
+3. Verify seeded CMS content and publication flags in PocketBase admin
+4. Test the contact flow from the real deployed domain

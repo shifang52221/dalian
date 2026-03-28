@@ -1,0 +1,34 @@
+[
+  {
+    "title_zh": "工艺经验",
+    "title_ja": "工法経験",
+    "description_zh": "针对连铸、连轧、冷轧等多种工况积累了丰富材料和工艺应用经验。",
+    "description_ja": "連鋳・圧延・冷間圧延など複数工況に対する材料と工法の実績があります。",
+    "sort_order": 1,
+    "is_published": true
+  },
+  {
+    "title_zh": "合作研发",
+    "title_ja": "共同研究",
+    "description_zh": "长期与大连理工大学合作研发相关新技术的工程化应用。",
+    "description_ja": "大連理工大学と連携し、表面技術の応用研究を継続しています。",
+    "sort_order": 2,
+    "is_published": true
+  },
+  {
+    "title_zh": "质量稳定",
+    "title_ja": "安定品質",
+    "description_zh": "具备较完备的制造、热处理、装配与检测流程，保证交付稳定性。",
+    "description_ja": "製造、熱処理、組立、検査までの工程を整え、安定した品質を提供します。",
+    "sort_order": 3,
+    "is_published": true
+  },
+  {
+    "title_zh": "面向全球客户",
+    "title_ja": "国内外対応",
+    "description_zh": "服务国内外钢铁企业与装备厂商，可支持新制、修复和工况改进。",
+    "description_ja": "新作・補修・改善提案を含め、国内外の鉄鋼関連ユーザーへ対応可能です。",
+    "sort_order": 4,
+    "is_published": true
+  }
+]

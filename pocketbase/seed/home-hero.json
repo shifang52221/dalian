@@ -1,0 +1,29 @@
+[
+  {
+    "eyebrow_zh": "钢铁行业辊道设备与表面工程",
+    "eyebrow_ja": "鉄鋼向けロール設備・表面技術",
+    "title_zh": "面向连铸连轧场景的制造与表面强化解决方案",
+    "title_ja": "表面強化技術と圧延設備部品の一体提供",
+    "description_zh": "大连博恒新技术有限公司专注连铸、连轧、冷轧等成套辊道设备及备品备件制造，具备堆焊、喷焊、等离子堆焊等核心表面工程能力。",
+    "description_ja": "大連博恒新技術有限公司は、連続鋳造・連続圧延・冷間圧延向けのロール設備、予備品、堆接・溶射などの表面技術を提供します。",
+    "primary_cta_label_zh": "联系我们",
+    "primary_cta_label_ja": "お問い合わせ",
+    "primary_cta_href": "#contact",
+    "secondary_cta_label_zh": "查看产品业绩",
+    "secondary_cta_label_ja": "実績を見る",
+    "secondary_cta_href": "#projects",
+    "highlights_zh": ["连铸设备", "连轧设备", "冷轧设备", "表面强化"],
+    "highlights_ja": ["連鋳設備", "圧延設備", "冷間圧延設備", "表面強化"],
+    "stats_zh": [
+      { "value": "15吨", "label": "埋弧堆焊设备" },
+      { "value": "3吨", "label": "明弧堆焊设备" },
+      { "value": "3吨", "label": "埋弧堆焊设备" }
+    ],
+    "stats_ja": [
+      { "value": "15トン", "label": "埋弧肉盛設備" },
+      { "value": "3トン", "label": "明弧肉盛設備" },
+      { "value": "3トン", "label": "埋弧肉盛設備" }
+    ],
+    "is_published": true
+  }
+]

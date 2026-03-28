@@ -1,4 +1,8 @@
 import type {
+  AdvantageRecord,
+  CooperationHighlightRecord,
+  HomeAboutRecord,
+  HomeHeroRecord,
   HomeSectionRecord,
   HomeSectionsView,
   SiteSettingsRecord,
@@ -37,6 +41,10 @@ function getSortOrder(record: Record<string, unknown>) {
 
 function sortBySortOrder<T extends Record<string, unknown>>(records: T[]) {
   return [...records].sort((left, right) => getSortOrder(left) - getSortOrder(right));
+}
+
+function getFirstPublishedRecord<T extends Record<string, unknown>>(records: T[]) {
+  return records.find(isPublished);
 }
 
 function formatPublishedDate(value: unknown) {
@@ -143,6 +151,51 @@ function normalizeSummaryText(value: unknown) {
     .replace(/\s*\n\s*/g, " ")
     .replace(/\s+/g, " ")
     .trim();
+}
+
+function parseJsonValue<T>(value: unknown): T | undefined {
+  if (value == null || value === "") {
+    return undefined;
+  }
+
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      return undefined;
+    }
+  }
+
+  return value as T;
+}
+
+function parseStringArray(value: unknown) {
+  const parsed = parseJsonValue<unknown>(value);
+  if (!Array.isArray(parsed)) {
+    return undefined;
+  }
+
+  const items = parsed
+    .map((item) => String(item ?? "").trim())
+    .filter(Boolean);
+
+  return items.length > 0 ? items : undefined;
+}
+
+function parseStatArray(value: unknown) {
+  const parsed = parseJsonValue<Array<Record<string, unknown>>>(value);
+  if (!Array.isArray(parsed)) {
+    return undefined;
+  }
+
+  const items = parsed
+    .map((item) => ({
+      value: String(item?.value ?? "").trim(),
+      label: String(item?.label ?? "").trim(),
+    }))
+    .filter((item) => item.value && item.label);
+
+  return items.length > 0 ? items : undefined;
 }
 
 function parseNewsContent(value: unknown) {
@@ -290,11 +343,24 @@ export async function getHomePageContent(
   const fallback = getFallbackHomeContent(locale);
 
   try {
-    const [siteSettings, sections, capabilities, productCases] = await Promise.all([
+    const [
+      siteSettings,
+      sections,
+      heroRecords,
+      aboutRecords,
+      capabilities,
+      advantages,
+      productCases,
+      cooperationHighlights,
+    ] = await Promise.all([
       getCollectionList(client, "site_settings"),
       getCollectionList(client, "home_sections"),
+      getCollectionList(client, "home_hero"),
+      getCollectionList(client, "home_about"),
       getCollectionList(client, "capabilities"),
+      getCollectionList(client, "advantages"),
       getCollectionList(client, "product_cases"),
+      getCollectionList(client, "cooperation_highlights"),
     ]);
 
     const result: HomeContent = structuredClone(fallback);
@@ -313,6 +379,41 @@ export async function getHomePageContent(
       result.hero.description = String(heroSection.summary);
     }
 
+    const heroRecord = getFirstPublishedRecord(heroRecords) as
+      | HomeHeroRecord
+      | undefined;
+    if (heroRecord) {
+      const localizedHero = mapLocaleRecord(heroRecord, locale) as Record<string, unknown>;
+      const highlights = parseStringArray(locale === "ja" ? heroRecord.highlights_ja : heroRecord.highlights_zh);
+      const stats = parseStatArray(locale === "ja" ? heroRecord.stats_ja : heroRecord.stats_zh);
+
+      if (localizedHero.eyebrow) {
+        result.hero.eyebrow = String(localizedHero.eyebrow);
+      }
+      if (localizedHero.title) {
+        result.hero.title = String(localizedHero.title);
+      }
+      if (localizedHero.description) {
+        result.hero.description = String(localizedHero.description);
+      }
+      if (locale === "ja" ? heroRecord.primary_cta_label_ja : heroRecord.primary_cta_label_zh) {
+        result.hero.primaryCta = String(
+          locale === "ja" ? heroRecord.primary_cta_label_ja : heroRecord.primary_cta_label_zh,
+        );
+      }
+      if (locale === "ja" ? heroRecord.secondary_cta_label_ja : heroRecord.secondary_cta_label_zh) {
+        result.hero.secondaryCta = String(
+          locale === "ja" ? heroRecord.secondary_cta_label_ja : heroRecord.secondary_cta_label_zh,
+        );
+      }
+      if (highlights) {
+        result.hero.highlights = highlights;
+      }
+      if (stats) {
+        result.hero.stats = stats;
+      }
+    }
+
     const aboutSection = sectionMap.get("about");
     if (aboutSection?.title) {
       result.about.title = String(aboutSection.title);
@@ -321,8 +422,39 @@ export async function getHomePageContent(
       result.about.description = String(aboutSection.summary);
     }
 
+    const aboutRecord = getFirstPublishedRecord(aboutRecords) as
+      | HomeAboutRecord
+      | undefined;
+    if (aboutRecord) {
+      const localizedAbout = mapLocaleRecord(aboutRecord, locale) as Record<string, unknown>;
+      const points = parseStringArray(locale === "ja" ? aboutRecord.points_ja : aboutRecord.points_zh);
+      const stats = parseStatArray(locale === "ja" ? aboutRecord.stats_ja : aboutRecord.stats_zh);
+
+      if (localizedAbout.eyebrow) {
+        result.about.eyebrow = String(localizedAbout.eyebrow);
+      }
+      if (localizedAbout.title) {
+        result.about.title = String(localizedAbout.title);
+      }
+      if (localizedAbout.description) {
+        result.about.description = String(localizedAbout.description);
+      }
+      if (points) {
+        result.about.points = points;
+      }
+      if (aboutRecord.badge_value || localizedAbout.badge_label) {
+        result.about.badge = {
+          value: String(aboutRecord.badge_value ?? result.about.badge.value),
+          label: String(localizedAbout.badge_label ?? result.about.badge.label),
+        };
+      }
+      if (stats) {
+        result.about.stats = stats;
+      }
+    }
+
     if (capabilities.length > 0) {
-      result.capabilities.items = sortBySortOrder(capabilities).map((item) => {
+      result.capabilities.items = sortBySortOrder(capabilities.filter(isPublished)).map((item) => {
         const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
         return {
           title: String(localized.title ?? ""),
@@ -331,14 +463,43 @@ export async function getHomePageContent(
       });
     }
 
+    if (advantages.length > 0) {
+      result.advantages.items = sortBySortOrder(advantages.filter(isPublished)).map((item) => {
+        const localized = mapLocaleRecord(item as AdvantageRecord, locale) as Record<
+          string,
+          unknown
+        >;
+        return {
+          title: String(localized.title ?? ""),
+          description: String(localized.description ?? ""),
+        };
+      });
+    }
+
     if (productCases.length > 0) {
-      result.projects.categories = sortBySortOrder(productCases).map((item) => {
+      result.projects.categories = sortBySortOrder(productCases.filter(isPublished)).map((item) => {
         const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
         const tags = locale === "ja" ? item.tags_ja : item.tags_zh;
         return {
           title: String(localized.category ?? ""),
           description: String(localized.description ?? ""),
           tags: Array.isArray(tags) ? tags.map((tag) => String(tag)) : [],
+        };
+      });
+    }
+
+    if (cooperationHighlights.length > 0) {
+      result.testimonials.items = sortBySortOrder(
+        cooperationHighlights.filter(isPublished),
+      ).map((item) => {
+        const localized = mapLocaleRecord(
+          item as CooperationHighlightRecord,
+          locale,
+        ) as Record<string, unknown>;
+        return {
+          name: String(localized.name ?? ""),
+          role: String(localized.role ?? ""),
+          quote: String(localized.quote ?? ""),
         };
       });
     }

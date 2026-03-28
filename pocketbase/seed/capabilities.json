@@ -4,41 +4,59 @@
     "title_ja": "サブマージアーク肉盛",
     "description_zh": "适用于关键辊类部件修复与新制，承重能力高，工艺稳定。",
     "description_ja": "主要ロール部品の新作・補修に対応し、安定した施工品質を確保します。",
-    "sort_order": 1
+    "icon_key": "submerged-arc",
+    "preview_group": "maihu",
+    "sort_order": 1,
+    "is_published": true
   },
   {
     "title_zh": "明弧堆焊",
     "title_ja": "オープンアーク肉盛",
     "description_zh": "适合宽边足辊、窄边足辊等部件，满足多种硬度区间需求。",
     "description_ja": "足ロールや周辺部品など、多様な硬度仕様に対応します。",
-    "sort_order": 2
+    "icon_key": "open-arc",
+    "preview_group": "minghu",
+    "sort_order": 2,
+    "is_published": true
   },
   {
     "title_zh": "等离子堆焊",
     "title_ja": "プラズマ肉盛",
     "description_zh": "用于高附着力、高耐磨场景，面向特殊损耗件寿命提升。",
     "description_ja": "高耐摩耗条件の部品向けに、高密着な表面層を形成します。",
-    "sort_order": 3
+    "icon_key": "plasma",
+    "preview_group": "denglizi",
+    "sort_order": 3,
+    "is_published": true
   },
   {
     "title_zh": "火焰喷焊",
     "title_ja": "火炎溶射",
     "description_zh": "可用于耐磨层构建和表面修复，提升部件服役周期。",
     "description_ja": "耐摩耗層の形成や補修用途に対応し、部品寿命を延ばします。",
-    "sort_order": 4
+    "icon_key": "flame-spray",
+    "preview_group": "huoyan",
+    "sort_order": 4,
+    "is_published": true
   },
   {
     "title_zh": "热处理与装配",
     "title_ja": "熱処理・組立",
     "description_zh": "配套热处理、喷丸、装配等环节，保证整体交付一致性。",
     "description_ja": "熱処理、ショット処理、組立まで含めた一貫生産体制を備えています。",
-    "sort_order": 5
+    "icon_key": "heat-treatment",
+    "preview_group": "rechuli",
+    "sort_order": 5,
+    "is_published": true
   },
   {
     "title_zh": "质量检测",
     "title_ja": "品質管理",
     "description_zh": "涵盖调质硬度检测、堆焊 PT 检测等品质控制流程。",
     "description_ja": "硬度検査や PT 検査など、品質保証のための工程を整備しています。",
-    "sort_order": 6
+    "icon_key": "quality-control",
+    "preview_group": "zhijian",
+    "sort_order": 6,
+    "is_published": true
   }
 ]

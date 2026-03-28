@@ -6,7 +6,8 @@
     "description_ja": "矯正ロール、連鋳ロール、スリーブなど。",
     "tags_zh": ["Cr13 系列", "Cr14 系列", "新制与修复"],
     "tags_ja": ["Cr13 系", "Cr14 系", "新作・補修"],
-    "sort_order": 1
+    "sort_order": 1,
+    "is_published": true
   },
   {
     "category_zh": "连轧设备",
@@ -15,6 +16,17 @@
     "description_ja": "ピンチロール、ガイドロール、層流ロールなど。",
     "tags_zh": ["Cr8-Mo-W-Co", "Ni-Cr-B-Si"],
     "tags_ja": ["Cr8-Mo-W-Co", "Ni-Cr-B-Si"],
-    "sort_order": 2
+    "sort_order": 2,
+    "is_published": true
+  },
+  {
+    "category_zh": "其他产品",
+    "category_ja": "その他製品",
+    "description_zh": "包括料斗、法兰、轴套、阀门、转子、汽缸修复等定制化业务。",
+    "description_ja": "ホッパー、フランジ、ブッシュ、バルブ、ローター補修なども対応可能です。",
+    "tags_zh": ["耐磨层", "修复", "特殊工况"],
+    "tags_ja": ["耐摩耗", "補修", "特殊条件"],
+    "sort_order": 3,
+    "is_published": true
   }
 ]
