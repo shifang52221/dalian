@@ -10,6 +10,7 @@
     "preview": "astro preview",
     "test": "vitest run",
     "cms:check": "node scripts/pocketbase-check.mjs",
+    "cms:restore-news": "node scripts/pocketbase-restore-recovered-news.mjs",
     "cms:setup": "node scripts/pocketbase-setup.mjs",
     "cms:seed": "node scripts/pocketbase-seed.mjs",
     "cms:seed:reset": "node scripts/pocketbase-seed.mjs --reset"
