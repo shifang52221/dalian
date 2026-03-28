@@ -1,0 +1,13 @@
+[
+  {
+    "slug": "surface-engineering-upgrade",
+    "title_zh": "官网内容体系升级，支持中日双语展示",
+    "title_ja": "日中二言語対応の企業サイトへ全面更新",
+    "summary_zh": "新官网将围绕公司能力、产品业绩、新闻和留言系统进行统一升级。",
+    "summary_ja": "新サイトでは会社情報、実績、ニュース、お問い合わせを一体的に再構成します。",
+    "content_zh": "后续将通过 PocketBase 后台维护新闻内容。",
+    "content_ja": "今後は PocketBase 管理画面からニュースを更新します。",
+    "published_at": "2026-03-16",
+    "is_published": true
+  }
+]

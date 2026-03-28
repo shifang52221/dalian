@@ -1,0 +1,51 @@
+---
+interface Props {
+  content: {
+    eyebrow: string;
+    title: string;
+    items: Array<{ title: string; description: string }>;
+  };
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section advantages-shell" id="advantages">
+  <div class="section__inner advantages-layout">
+    <div class="advantages-lead" data-reveal>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 class="section__title">{content.title}</h2>
+      <p class="section__subtitle">
+        Built for long-cycle steel equipment programs with stronger process fit, coordinated development, and steadier
+        execution across fabrication, repair, and delivery.
+      </p>
+
+      <div class="advantages-note">
+        <span class="advantages-note__label">Execution Priorities</span>
+        <p>Process experience, joint R&D, quality discipline, and global-facing project support in one system.</p>
+      </div>
+    </div>
+
+    <div class="advantages-grid advantages-grid--expanded">
+      {
+        content.items.map((item, index) => (
+          <article class="feature-item feature-item--premium" data-reveal data-delay={`${(index + 1) * 100}`}>
+            <div class="advantages-card__plate" aria-hidden="true"></div>
+            <div class="advantages-card__surface">
+              <div class="advantages-card__blinds" aria-hidden="true"></div>
+              <div class="advantages-card__sheen" aria-hidden="true"></div>
+              <div class="feature-item__top">
+                <div class="card-icon" aria-hidden="true">{index + 1}</div>
+              </div>
+              <div class="advantages-card__content">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+              <span class="advantages-card__line" aria-hidden="true"></span>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

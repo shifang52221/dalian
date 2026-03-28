@@ -1,0 +1,75 @@
+---
+import NewsCard from "../../components/news/NewsCard.astro";
+import { getNewsList } from "../../lib/content-api";
+import { splitFeaturedNews } from "../../lib/news-layout";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const items = await getNewsList("zh");
+const { featuredItem, archiveItems } = splitFeaturedNews(items);
+---
+
+<BaseLayout
+  locale="zh"
+  lang="zh-CN"
+  title="新闻中心 | 大连博恒新技术有限公司"
+  description="查看大连博恒新技术有限公司的最新新闻、工艺动态与交付更新。"
+>
+  <section class="section section--light news-editorial-shell">
+    <div class="section__inner">
+      <div class="news-editorial-hero" data-reveal>
+        <div class="news-breadcrumb">
+          <a href="/">首页</a>
+          <span>/</span>
+          <strong>新闻中心</strong>
+        </div>
+        <p class="eyebrow">NEWSROOM</p>
+        <h1 class="section__title">企业新闻与工艺动态</h1>
+        <p class="section__subtitle">
+          以更接近服务详情页的方式呈现博恒的企业动态、工艺更新、项目推进和交付信息。
+        </p>
+      </div>
+
+      {
+        featuredItem && (
+          <div class="news-featured-layout">
+            <aside class="news-featured-sidebar" data-reveal data-delay="100">
+              <div class="news-featured-note">
+                <p class="news-featured-note__kicker">栏目说明</p>
+                <h2>面向工业客户的资讯表达</h2>
+                <p>
+                  这里集中展示设备制造、表面强化、工艺能力更新以及合作推进信息，版式参考服务详情页，强调信息层级与企业质感。
+                </p>
+              </div>
+              <div class="news-featured-note news-featured-note--contact">
+                <p class="news-featured-note__kicker">项目咨询</p>
+                <p>如果你正在关注辊类设备、堆焊修复或工况改进，可直接从首页联系板块提交需求。</p>
+                <a class="button button--ghost" href="/#contact">前往咨询</a>
+              </div>
+            </aside>
+            <div class="news-featured-main">
+              <NewsCard item={featuredItem} locale="zh" featured />
+            </div>
+          </div>
+        )
+      }
+
+      {
+        archiveItems.length > 0 ? (
+          <div class="news-archive-grid">
+            {archiveItems.map((item, index) => (
+              <NewsCard item={item} locale="zh" data-delay={`${(index + 1) * 100}`} />
+            ))}
+          </div>
+        ) : (
+          <div class="news-archive-empty" data-reveal data-delay="160">
+            <p class="news-archive-empty__kicker">NEWS DESK</p>
+            <h2>后续新闻将在这里持续更新</h2>
+            <p>
+              当前已经接入后台新闻数据，新增内容发布后会自动延展为多条资讯列表，不再重复当前主条目。
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

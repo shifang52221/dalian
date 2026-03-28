@@ -1,0 +1,96 @@
+---
+interface Props {
+  content: {
+    eyebrow: string;
+    title: string;
+    titleLines?: string[];
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+    highlights: string[];
+    stats: Array<{ value: string; label: string }>;
+  };
+  image?: {
+    src: string;
+    alt: string;
+  };
+}
+
+const { content, image } = Astro.props;
+const heroStyle = image ? `--hero-image: url('${image.src}')` : undefined;
+const heroTitleLines = content.titleLines?.length ? content.titleLines : [content.title];
+---
+
+<section class="hero hero--home hero--immersive" id="home" style={heroStyle}>
+  <div class="hero__ambient" aria-hidden="true">
+    <span class="hero__ambient-orb hero__ambient-orb--left"></span>
+    <span class="hero__ambient-orb hero__ambient-orb--right"></span>
+    <span class="hero__ambient-grid"></span>
+  </div>
+  <div class="hero__wrap">
+    <div class="hero__content" data-reveal>
+      <div class="hero__content-stack">
+        <div class="hero__intro">
+          <div class="hero__eyebrow-band">
+            <span class="hero__eyebrow-dot" aria-hidden="true"></span>
+            <p class="eyebrow">{content.eyebrow}</p>
+          </div>
+          <div class="hero__title-stack">
+            <h1 class="hero__title-display">
+              {
+                heroTitleLines.map((line) => (
+                  <span class="hero__title-line">{line}</span>
+                ))
+              }
+            </h1>
+            <div class="hero__lead-shell">
+              <p class="hero__lead">{content.description}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__action-block">
+          <div class="hero__actions">
+            <div class="hero__action-row">
+              <a class="button button--primary" href="#contact">{content.primaryCta}</a>
+              <a class="button button--ghost" href="#projects">{content.secondaryCta}</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero__partner-row">
+          <div class="hero__sector-panel">
+            <div class="hero__sector-grid">
+              <div class="hero__highlights">
+                {
+                  content.highlights.map((item) => (
+                    <span class="hero-highlight hero-highlight--minimal">{item}</span>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero__aside" data-reveal data-delay="100">
+      <div class="hero-figure">
+        <div class="hero-spotlight hero-figure__frame">
+          <div class="hero-spotlight__media">
+            {image && <img src={image.src} alt={image.alt} class="hero-figure__image" />}
+          </div>
+        </div>
+
+        {
+          content.stats.map((item, index) => (
+            <article class:list={["hero-floating-badge", `hero-floating-badge--${index + 1}`]}>
+              <span class="hero-floating-badge__icon" aria-hidden="true"></span>
+              <span class="hero-floating-badge__text">{`${item.value}${item.label}`}</span>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

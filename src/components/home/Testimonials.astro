@@ -1,0 +1,39 @@
+---
+interface Props {
+  content: {
+    eyebrow: string;
+    title: string;
+    items: Array<{ name: string; role: string; quote: string }>;
+  };
+}
+
+const { content } = Astro.props;
+---
+
+<section class="section testimonial-shell" id="testimonials">
+  <div class="section__inner testimonial-layout">
+    <div class="testimonial-lead" data-reveal>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 class="section__title">{content.title}</h2>
+      <p class="section__subtitle">
+        A calmer B2B delivery summary focused on coordination, quality control, and engineering response instead of
+        consumer-style praise.
+      </p>
+    </div>
+
+    <div class="testimonial-grid">
+      {
+        content.items.map((item, index) => (
+          <article class="testimonial-card testimonial-card--editorial" data-reveal data-delay={`${(index + 1) * 100}`}>
+            <span class="testimonial-card__kicker">Coordination 0{index + 1}</span>
+            <p class="testimonial-card__quote">{item.quote}</p>
+            <div class="testimonial-card__meta">
+              <h3>{item.name}</h3>
+              <p>{item.role}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

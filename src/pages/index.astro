@@ -1,0 +1,34 @@
+---
+import About from "../components/home/About.astro";
+import Advantages from "../components/home/Advantages.astro";
+import Capabilities from "../components/home/Capabilities.astro";
+import ContactSection from "../components/home/ContactSection.astro";
+import Hero from "../components/home/Hero.astro";
+import NewsPreview from "../components/home/NewsPreview.astro";
+import Projects from "../components/home/Projects.astro";
+import Testimonials from "../components/home/Testimonials.astro";
+import { getImageManifest } from "../content/image-manifest";
+import { getSiteCopy } from "../content/site-copy";
+import { getHomePageContent } from "../lib/content-api";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const content = await getHomePageContent("zh");
+const copy = getSiteCopy("zh");
+const images = getImageManifest();
+---
+
+<BaseLayout
+  locale="zh"
+  lang="zh-CN"
+  title="大连博恒新技术有限公司"
+  description="大连博恒新技术有限公司中日双语工业企业官网。"
+>
+  <Hero content={content.hero} image={images.heroSpotlight} />
+  <About content={content.about} image={images.about} />
+  <Capabilities content={content.capabilities} />
+  <Advantages content={content.advantages} />
+  <Projects content={content.projects} images={images.gallery} />
+  <Testimonials content={content.testimonials} />
+  <NewsPreview locale="zh" actionLabel={copy.newsPreviewAction} content={content.news} />
+  <ContactSection locale="zh" content={content.contact} />
+</BaseLayout>

@@ -1,0 +1,196 @@
+---
+interface Props {
+  content: {
+    eyebrow: string;
+    title: string;
+    items: Array<{ title: string; description: string }>;
+  };
+}
+
+const { content } = Astro.props;
+const capabilityHoverMedia = new Map([
+  [
+    "埋弧堆焊",
+    {
+      src: "/images/capabilities/maihu.jpg",
+      alt: "Submerged arc welding equipment photo",
+    },
+  ],
+  [
+    "埋弧肉盛",
+    {
+      src: "/images/capabilities/maihu.jpg",
+      alt: "Submerged arc welding equipment photo",
+    },
+  ],
+  [
+    "明弧堆焊",
+    {
+      src: "/images/capabilities/minghu.jpg",
+      alt: "Open arc welding equipment photo",
+    },
+  ],
+  [
+    "オープンアーク肉盛",
+    {
+      src: "/images/capabilities/minghu.jpg",
+      alt: "Open arc welding equipment photo",
+    },
+  ],
+  [
+    "等离子堆焊",
+    {
+      src: "/images/capabilities/denglizi.jpg",
+      alt: "Plasma cladding equipment photo",
+    },
+  ],
+  [
+    "プラズマ肉盛",
+    {
+      src: "/images/capabilities/denglizi.jpg",
+      alt: "Plasma cladding equipment photo",
+    },
+  ],
+  [
+    "火焰喷焊",
+    {
+      src: "/images/capabilities/huoyan.jpg",
+      alt: "Flame spray equipment photo",
+    },
+  ],
+  [
+    "火炎溶射",
+    {
+      src: "/images/capabilities/huoyan.jpg",
+      alt: "Flame spray equipment photo",
+    },
+  ],
+  [
+    "质量检测",
+    {
+      src: "/images/capabilities/zhijian.jpg",
+      alt: "Quality inspection photo",
+    },
+  ],
+  [
+    "品質管理",
+    {
+      src: "/images/capabilities/zhijian.jpg",
+      alt: "Quality inspection photo",
+    },
+  ],
+  [
+    "热处理与装配",
+    {
+      src: "/images/capabilities/rechuli.jpg",
+      alt: "Heat treatment and assembly photo",
+    },
+  ],
+  [
+    "サブマージアーク肉盛",
+    {
+      src: "/images/capabilities/maihu.jpg",
+      alt: "Submerged arc welding equipment photo",
+    },
+  ],
+  [
+    "熱処理・組立",
+    {
+      src: "/images/capabilities/rechuli.jpg",
+      alt: "Heat treatment and assembly photo",
+    },
+  ],
+]);
+const capabilityIcons = [
+  '<rect x="5" y="6" width="14" height="10" rx="2"></rect><path d="M9 19h6"></path><path d="M12 16v3"></path>',
+  '<path d="M7 18h10"></path><path d="M8 18l2-8h4l2 8"></path><path d="M9.5 12h5"></path>',
+  '<circle cx="12" cy="12" r="4"></circle><path d="M4 12h4"></path><path d="M16 12h4"></path><path d="M12 4v4"></path><path d="M12 16v4"></path>',
+  '<path d="M7 18c0-4 2.5-6.5 7-7"></path><path d="M14 11l3-5"></path><path d="M15 17h3"></path><circle cx="17" cy="6" r="2"></circle>',
+  '<path d="M7 7h10"></path><path d="M7 12h10"></path><path d="M7 17h10"></path><path d="M9 7v10"></path><path d="M15 7v10"></path>',
+  '<path d="M8 12l2.5 2.5L16 9"></path><circle cx="12" cy="12" r="8"></circle>',
+];
+---
+
+<section class="section section--light" id="capabilities">
+  <div class="section__inner capabilities-layout">
+    <div class="capabilities-lead" data-reveal>
+      <p class="eyebrow capabilities-motion-line">{content.eyebrow}</p>
+      <h2 class="section__title capabilities-motion-block">{content.title}</h2>
+      <p class="section__subtitle capabilities-motion-line">
+        From fabrication to heat treatment, coating, inspection, and component recovery, Boheng supports the full
+        delivery chain with one consistent engineering language.
+      </p>
+    </div>
+
+    <div class="capabilities-grid">
+      {
+        content.items.map((item, index) => {
+          const hoverMedia = capabilityHoverMedia.get(item.title);
+
+          return (
+            <article
+              class={`service-card service-card--capability${hoverMedia ? " capability-card--with-media" : ""}`}
+              data-reveal
+              data-delay={`${(index + 1) * 100}`}
+              data-capability-preview-trigger={hoverMedia ? "" : undefined}
+              data-capability-preview-src={hoverMedia?.src}
+              data-capability-preview-alt={hoverMedia?.alt}
+              data-capability-preview-title={hoverMedia ? item.title : undefined}
+              role={hoverMedia ? "button" : undefined}
+              tabindex={hoverMedia ? "0" : undefined}
+              aria-controls={hoverMedia ? "capability-preview" : undefined}
+              aria-haspopup={hoverMedia ? "dialog" : undefined}
+              aria-label={hoverMedia ? `View ${item.title} image` : undefined}
+            >
+              {
+                hoverMedia && (
+                  <>
+                    <div class="capability-card__media" aria-hidden="true">
+                      <img src={hoverMedia.src} alt="" loading="lazy" decoding="async" />
+                    </div>
+                    <div class="capability-card__media-overlay" aria-hidden="true"></div>
+                  </>
+                )
+              }
+              <div class="capability-card__icon-shell" aria-hidden="true">
+                <svg
+                  class="capability-card__icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.8"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  set:html={capabilityIcons[index % capabilityIcons.length]}
+                />
+              </div>
+              <div class="capability-card__body">
+                <h3>{item.title}</h3>
+                <p>{item.description}</p>
+              </div>
+            </article>
+          );
+        })
+      }
+    </div>
+
+    <div class="capability-preview" id="capability-preview" data-capability-preview aria-hidden="true" hidden>
+      <div class="capability-preview__backdrop" data-capability-preview-close aria-hidden="true"></div>
+      <div class="capability-preview__dialog" role="dialog" aria-modal="true" aria-labelledby="capability-preview-title">
+        <div class="capability-preview__toolbar">
+          <div class="capability-preview__meta">
+            <p class="capability-preview__eyebrow">设备实景</p>
+            <p class="capability-preview__caption" id="capability-preview-title" data-capability-preview-title></p>
+          </div>
+          <button class="capability-preview__close" type="button" data-capability-preview-close aria-label="关闭预览">
+            <span class="capability-preview__close-icon" aria-hidden="true">×</span>
+            <span class="capability-preview__close-label">关闭</span>
+          </button>
+        </div>
+        <div class="capability-preview__frame">
+          <img data-capability-preview-image src="" alt="" loading="eager" decoding="async" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,100 @@
+---
+import type { NewsItem } from "../../content/fallback/news";
+import { getNewsUrl, type Locale } from "../../lib/i18n";
+
+interface Props {
+  item: NewsItem;
+  locale: Locale;
+  relatedItems?: NewsItem[];
+}
+
+const { item, locale, relatedItems = [] } = Astro.props;
+
+const labels =
+  locale === "ja"
+    ? {
+        breadcrumbHome: "ホーム",
+        breadcrumbNews: "ニュース",
+        publishLabel: "公開日",
+        relatedTitle: "関連ニュース",
+        backLabel: "ニュース一覧へ戻る",
+      }
+    : {
+        breadcrumbHome: "首页",
+        breadcrumbNews: "新闻中心",
+        publishLabel: "发布日期",
+        relatedTitle: "更多新闻",
+        backLabel: "返回新闻中心",
+      };
+
+const newsIndexUrl = locale === "ja" ? "/ja/news" : "/news";
+const hasRichContent = Boolean(item.contentHtml?.trim());
+const paragraphs = !hasRichContent && item.content.length > 0 ? item.content : [item.summary];
+const [leadParagraph, ...bodyParagraphs] = paragraphs;
+---
+
+<section class="section section--light news-detail">
+  <div class="section__inner">
+    <header class="news-detail__header" data-reveal>
+      <div class="news-breadcrumb">
+        <a href={locale === "ja" ? "/ja/" : "/"}>{labels.breadcrumbHome}</a>
+        <span>/</span>
+        <a href={newsIndexUrl}>{labels.breadcrumbNews}</a>
+        <span>/</span>
+        <strong>{item.title}</strong>
+      </div>
+      <h1 class="news-detail__title">{item.title}</h1>
+      <div class="news-detail__meta">
+        <span>{labels.publishLabel}</span>
+        <strong>{item.date}</strong>
+      </div>
+      <p class="news-detail__summary">{item.summary}</p>
+    </header>
+
+    <article class="news-detail__article" data-reveal data-delay="100">
+      {
+        item.image && (
+          <figure class="news-detail__article-visual">
+            <img src={item.image.src} alt={item.image.alt} loading="eager" decoding="async" />
+          </figure>
+        )
+      }
+
+      <div class="news-detail__content">
+        {
+          item.contentHtml ? (
+            <div class="news-detail__richtext" set:html={item.contentHtml} />
+          ) : (
+            <>
+              <p class="news-detail__lead">{leadParagraph}</p>
+              {bodyParagraphs.length > 0 ? bodyParagraphs.map((paragraph) => <p class="news-detail__paragraph">{paragraph}</p>) : null}
+            </>
+          )
+        }
+      </div>
+
+      <div class="news-detail__footer-action">
+        <a class="button button--primary" href={newsIndexUrl}>{labels.backLabel}</a>
+      </div>
+    </article>
+
+    {
+      relatedItems.length > 0 && (
+        <div class="news-related" data-reveal data-delay="220">
+          <div class="news-related__heading">
+            <h2 class="section__title">{labels.relatedTitle}</h2>
+          </div>
+          <div class="news-related__grid">
+            {relatedItems.map((related) => (
+              <a class="news-related__item" href={getNewsUrl(related.slug, locale)}>
+                <span class="news-related__date">{related.date}</span>
+                <strong>{related.title}</strong>
+                <p>{related.summary}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+</section>

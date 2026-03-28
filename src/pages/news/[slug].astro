@@ -1,0 +1,45 @@
+---
+import NewsDetail from "../../components/news/NewsDetail.astro";
+import { getNewsList } from "../../lib/content-api";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const slug = Astro.params.slug ?? "";
+const allItems = await getNewsList("zh");
+const item = allItems.find((entry) => entry.slug === slug);
+
+const relatedItems = allItems.filter((entry) => entry.slug !== slug).slice(0, 3);
+const title = item
+  ? `${item.title} | 大连博恒新技术有限公司`
+  : "新闻未找到 | 大连博恒新技术有限公司";
+const description = item?.summary ?? "未找到对应的新闻内容。";
+
+if (!item) {
+  Astro.response.status = 404;
+}
+---
+
+<BaseLayout
+  locale="zh"
+  lang="zh-CN"
+  title={title}
+  description={description}
+>
+  {
+    item ? (
+      <NewsDetail item={item} locale="zh" relatedItems={relatedItems} />
+    ) : (
+      <section class="section section--light">
+        <div class="section__inner">
+          <div class="section__heading section__heading--center" data-reveal>
+            <p class="eyebrow">新闻中心</p>
+            <h1 class="section__title">未找到该新闻</h1>
+            <p class="section__subtitle">
+              当前链接对应的新闻不存在或尚未发布，请返回新闻中心查看其他内容。
+            </p>
+            <a class="button button--primary" href="/news">返回新闻中心</a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,75 @@
+---
+import NewsCard from "../../../components/news/NewsCard.astro";
+import { getNewsList } from "../../../lib/content-api";
+import { splitFeaturedNews } from "../../../lib/news-layout";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const items = await getNewsList("ja");
+const { featuredItem, archiveItems } = splitFeaturedNews(items);
+---
+
+<BaseLayout
+  locale="ja"
+  lang="ja-JP"
+  title="ニュース | 大连博恒新技术有限公司"
+  description="大連博恒新技術有限公司の最新ニュース、工法更新、納入情報を確認できます。"
+>
+  <section class="section section--light news-editorial-shell">
+    <div class="section__inner">
+      <div class="news-editorial-hero" data-reveal>
+        <div class="news-breadcrumb">
+          <a href="/ja/">ホーム</a>
+          <span>/</span>
+          <strong>ニュース</strong>
+        </div>
+        <p class="eyebrow">NEWSROOM</p>
+        <h1 class="section__title">企業ニュースと工法アップデート</h1>
+        <p class="section__subtitle">
+          企業動向、工法更新、案件進捗、納入情報を、サービス詳細ページに近い落ち着いたレイアウトで整理して紹介します。
+        </p>
+      </div>
+
+      {
+        featuredItem && (
+          <div class="news-featured-layout">
+            <aside class="news-featured-sidebar" data-reveal data-delay="100">
+              <div class="news-featured-note">
+                <p class="news-featured-note__kicker">SECTOR NOTE</p>
+                <h2>産業顧客向けの情報整理</h2>
+                <p>
+                  ここでは設備製造、表面強化、工法改善、納入進捗を中心に、企業サイト内でも読み応えのある詳細レイアウトで掲載します。
+                </p>
+              </div>
+              <div class="news-featured-note news-featured-note--contact">
+                <p class="news-featured-note__kicker">PROJECT DESK</p>
+                <p>設備や補修案件に関するご相談は、トップページのお問い合わせ導線から送信できます。</p>
+                <a class="button button--ghost" href="/ja/#contact">お問い合わせへ</a>
+              </div>
+            </aside>
+            <div class="news-featured-main">
+              <NewsCard item={featuredItem} locale="ja" featured />
+            </div>
+          </div>
+        )
+      }
+
+      {
+        archiveItems.length > 0 ? (
+          <div class="news-archive-grid">
+            {archiveItems.map((item, index) => (
+              <NewsCard item={item} locale="ja" data-delay={`${(index + 1) * 100}`} />
+            ))}
+          </div>
+        ) : (
+          <div class="news-archive-empty" data-reveal data-delay="160">
+            <p class="news-archive-empty__kicker">NEWS DESK</p>
+            <h2>今後のニュースはここに一覧表示されます</h2>
+            <p>
+              すでに管理画面のニュース連携は完了しており、新規記事が追加されるとこのエリアに自動で積み上がります。
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

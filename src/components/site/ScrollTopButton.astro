@@ -1,0 +1,12 @@
+---
+interface Props {
+  locale: "zh" | "ja";
+}
+
+const { locale } = Astro.props;
+const label = locale === "ja" ? "ページ上部へ戻る" : "返回顶部";
+---
+
+<button class="scroll-top" id="scrollTop" aria-label={label} type="button">
+  <span aria-hidden="true">↑</span>
+</button>

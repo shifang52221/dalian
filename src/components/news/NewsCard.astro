@@ -1,0 +1,49 @@
+---
+import type { NewsItem } from "../../content/fallback/news";
+import { getNewsUrl, type Locale } from "../../lib/i18n";
+
+interface Props {
+  item: NewsItem;
+  locale: Locale;
+  featured?: boolean;
+}
+
+const { item, locale, featured = false } = Astro.props;
+const actionLabel = locale === "ja" ? "詳しく見る" : "查看详情";
+const cardKicker = locale === "ja" ? "NEWS UPDATE" : "NEWS UPDATE";
+const cardBadge = featured ? "FEATURED" : "BH";
+---
+
+<article class:list={["news-card", "news-card--editorial", featured && "news-card--featured"]} data-reveal>
+  <a class="news-card__shell" href={getNewsUrl(item.slug, locale)}>
+    <div class:list={["news-card__media", item.image && "news-card__media--with-image"]} aria-hidden="true">
+      {
+        item.image && (
+          <img
+            class="news-card__media-image"
+            src={item.image.src}
+            alt=""
+            loading="lazy"
+            decoding="async"
+          />
+        )
+      }
+      <span class="news-card__media-badge">{cardBadge}</span>
+      <span class="news-card__media-grid"></span>
+      <span class="news-card__media-ring"></span>
+      <span class="news-card__media-date">{item.date}</span>
+    </div>
+    <div class="news-card__body">
+      <div class="news-card__topline">
+        <span class="news-card__eyebrow">{cardKicker}</span>
+        <span class="news-card__meta">{item.date}</span>
+      </div>
+      <h3>{item.title}</h3>
+      <p>{item.summary}</p>
+      <div class="news-card__action">
+        <span>{actionLabel}</span>
+        <span class="news-card__action-line" aria-hidden="true"></span>
+      </div>
+    </div>
+  </a>
+</article>

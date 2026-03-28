@@ -1,0 +1,20 @@
+---
+import { getLocaleUrl, type Locale } from "../../lib/i18n";
+
+interface Props {
+  currentLocale: Locale;
+  currentPath: string;
+}
+
+const { currentLocale, currentPath } = Astro.props;
+const zhUrl = getLocaleUrl(currentPath, "zh");
+const jaUrl = getLocaleUrl(currentPath, "ja");
+---
+
+<div class="language-switch" aria-label="Language switch">
+  <span class="language-switch__label">Locale</span>
+  <div class="language-switch__track">
+    <a class:list={[currentLocale === "zh" && "is-active"]} href={zhUrl}>中文</a>
+    <a class:list={[currentLocale === "ja" && "is-active"]} href={jaUrl}>日本語</a>
+  </div>
+</div>

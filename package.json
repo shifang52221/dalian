@@ -1,0 +1,34 @@
+{
+  "name": "www13dalian",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "cms:check": "node scripts/pocketbase-check.mjs",
+    "cms:setup": "node scripts/pocketbase-setup.mjs",
+    "cms:seed": "node scripts/pocketbase-seed.mjs",
+    "cms:seed:reset": "node scripts/pocketbase-seed.mjs --reset"
+  },
+  "dependencies": {
+    "@astrojs/node": "^10.0.1",
+    "@shikijs/engine-oniguruma": "^4.0.2",
+    "astro": "^6.0.4",
+    "pocketbase": "^0.26.3",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "zod": "^4.1.11"
+  },
+  "devDependencies": {
+    "@astrojs/react": "^5.0.1",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "clsx": "^2.1.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}

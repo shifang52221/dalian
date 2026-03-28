@@ -1,0 +1,45 @@
+---
+import Preloader from "../components/site/Preloader.astro";
+import ScrollTopButton from "../components/site/ScrollTopButton.astro";
+import Footer from "../components/site/Footer.astro";
+import Header from "../components/site/Header.astro";
+import { getSiteSettings } from "../lib/content-api";
+import type { SiteSettingsView } from "../types/content";
+import siteEffectsUrl from "../scripts/site-effects.js?url";
+import "../styles/global.css";
+
+interface Props {
+  locale: "zh" | "ja";
+  lang: "zh-CN" | "ja-JP";
+  title: string;
+  description: string;
+  siteSettings?: SiteSettingsView;
+}
+
+const { locale, lang, title, description } = Astro.props;
+const siteSettings = Astro.props.siteSettings ?? await getSiteSettings(locale);
+const isHomePage = Astro.url.pathname === "/" || Astro.url.pathname === "/ja/";
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="shortcut icon" href="/logo.png" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+  </head>
+  <body class:list={["page-body", isHomePage && "page--home"]}>
+    <Preloader locale={locale} />
+    <main class="page-shell page-shell--premium">
+      <div class="page-shell__backdrop" aria-hidden="true"></div>
+      <Header locale={locale} currentPath={Astro.url.pathname} siteSettings={siteSettings} />
+      <slot />
+      <Footer locale={locale} siteSettings={siteSettings} />
+    </main>
+    <ScrollTopButton locale={locale} />
+    <script type="module" src={siteEffectsUrl}></script>
+  </body>
+</html>

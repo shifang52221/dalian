@@ -1,0 +1,63 @@
+---
+interface Props {
+  content: {
+    eyebrow: string;
+    title: string;
+    categories: Array<{ title: string; description: string; tags: string[] }>;
+  };
+  images?: Array<{ src: string; alt: string }>;
+}
+
+const { content, images = [] } = Astro.props;
+
+const lead = content.categories[0];
+const leadImage = images[0];
+const mosaicItems = images.slice(1).map((image, index) => ({
+  image,
+  category: content.categories[(index + 1) % content.categories.length],
+}));
+---
+
+<section class="section section--light" id="projects">
+  <div class="section__inner projects-shell">
+    <div class="section__heading" data-reveal>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 class="section__title">{content.title}</h2>
+    </div>
+
+    <div class="projects-feature" data-reveal>
+      <div class="projects-feature__media">
+        {leadImage && <img src={leadImage.src} alt={leadImage.alt} />}
+      </div>
+      <div class="projects-feature__content">
+        <span class="projects-feature__eyebrow">Featured Capability</span>
+        <h3>{lead?.title}</h3>
+        <p>{lead?.description}</p>
+        <div class="project-tags">
+          {
+            lead?.tags?.map((tag) => (
+              <span>{tag}</span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="projects-mosaic">
+      {
+        mosaicItems.map((item, index) => (
+          <article class="gallery-item gallery-item--reference" data-reveal data-delay={`${(index + 1) * 100}`}>
+            <img class="gallery-media" src={item.image.src} alt={item.image.alt} />
+            <div class="gallery-mini-label">
+              <span>{item.category.title}</span>
+            </div>
+            <div class="gallery-caption">
+              <h3>{item.category.title}</h3>
+              <p>{item.category.description}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

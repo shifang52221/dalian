@@ -1,0 +1,64 @@
+---
+import { getSiteCopy } from "../../content/site-copy";
+import type { Locale } from "../../lib/i18n";
+import type { SiteSettingsView } from "../../types/content";
+
+interface Props {
+  locale: Locale;
+  siteSettings: SiteSettingsView;
+}
+
+const { locale, siteSettings } = Astro.props;
+const content = getSiteCopy(locale).footer;
+const brandLine = "Precision surface engineering for steel equipment systems.";
+---
+
+<footer class="site-footer">
+  <div class="site-footer__backdrop" aria-hidden="true"></div>
+  <div class="site-footer__inner">
+    <div class="site-footer__grid">
+      <div data-reveal>
+        <a class="site-footer__brand" href={locale === "ja" ? "/ja/" : "/"}>
+          <span class="site-footer__brand-shell">
+            <img
+              class="site-footer__brand-logo"
+              src="/logo.png"
+              alt="Dalian Boheng logo"
+              width="567"
+              height="283"
+            />
+          </span>
+        </a>
+        <p class="site-footer__kicker">DALIAN BOHENG</p>
+        <h2>{content.title}</h2>
+        <p>{content.description}</p>
+      </div>
+      <div class="site-footer__meta" data-reveal data-delay="100">
+        <h2>{content.quickLinksTitle}</h2>
+        {
+          content.quickLinks.map((item) => (
+            <a href={item.href}>{item.label}</a>
+          ))
+        }
+      </div>
+      <div class="site-footer__meta" data-reveal data-delay="200">
+        <h2>{content.serviceTitle}</h2>
+        {
+          content.services.map((item) => (
+            <p>{item}</p>
+          ))
+        }
+      </div>
+      <div class="site-footer__meta" data-reveal data-delay="300">
+        <h2>{content.contactTitle}</h2>
+        <p>{siteSettings.address}</p>
+        <p>{siteSettings.phone}</p>
+        <p>{siteSettings.email}</p>
+      </div>
+    </div>
+    <div class="site-footer__bottom">
+      <p class="site-footer__legal">{siteSettings.companyName}</p>
+      <p class="site-footer__legal">{brandLine}</p>
+    </div>
+  </div>
+</footer>

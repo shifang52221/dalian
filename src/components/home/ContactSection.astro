@@ -1,0 +1,209 @@
+---
+import { Button } from "../ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Textarea } from "../ui/textarea";
+
+interface Props {
+  locale?: "zh" | "ja";
+  content: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    details: Array<{ label: string; value: string }>;
+    formLabels: {
+      name: string;
+      company: string;
+      email: string;
+      phone: string;
+      message: string;
+      submit: string;
+    };
+  };
+}
+
+const { content, locale = "zh" } = Astro.props;
+const formHeading = locale === "ja" ? "Consultation request" : "Project inquiry";
+const infoHeading = locale === "ja" ? "Contact details" : "Contact details";
+const addressDetail =
+  content.details.find((detail) => /地址|住所|address/i.test(detail.label))?.value ?? content.details[0]?.value ?? "";
+const encodedAddress = encodeURIComponent(addressDetail);
+const amapGeoBounds = "121.2190244|38.9027021|121.2582175|38.9235801";
+const amapSearchUrl =
+  `https://www.amap.com/search?query=${encodedAddress}&city=210200&geoobj=${amapGeoBounds}&zoom=15`;
+const baiduMapAk = "WPikkqUAOD9fSQMXnXNkQ2o1R6xdH4O6";
+const baiduFallbackLat = 38.913141;
+const baiduFallbackLng = 121.238621;
+const companyName =
+  locale === "ja" ? "\u5927\u9023\u535a\u6052\u65b0\u6280\u8853\u6709\u9650\u516c\u53f8" : "\u5927\u8fde\u535a\u6052\u65b0\u6280\u672f\u6709\u9650\u516c\u53f8";
+const baiduStaticMapUrl =
+  `https://api.map.baidu.com/staticimage/v2?ak=${baiduMapAk}&center=${baiduFallbackLng},${baiduFallbackLat}&width=960&height=420&zoom=15&markers=${baiduFallbackLng},${baiduFallbackLat}&markerStyles=l,0x2c6ea3,0xffffff`;
+const amapUrl = amapSearchUrl;
+const baiduMapUrl = `https://map.baidu.com/search/${encodedAddress}`;
+const mapPinLabel = locale === "ja" ? "Factory location" : "\u5de5\u5382\u4f4d\u7f6e\u793a\u610f";
+const mapNote =
+  locale === "ja"
+    ? "The map shows the approximate plant area. Use the buttons above to open the full map."
+    : "\u5730\u56fe\u663e\u793a\u4e3a\u5382\u533a\u5927\u81f4\u4f4d\u7f6e\uff0c\u53ef\u4ece\u53f3\u4e0a\u89d2\u6253\u5f00\u5b8c\u6574\u5730\u56fe\u3002";
+---
+
+<section class="section section--light" id="contact">
+  <div class="section__inner">
+    <div class="section__heading section__heading--center" data-reveal>
+      <p class="eyebrow">{content.eyebrow}</p>
+      <h2 class="section__title">{content.title}</h2>
+      <p class="section__subtitle">{content.description}</p>
+    </div>
+    <div class="contact-grid">
+      <Card className="contact-form-card" data-reveal>
+        <CardHeader>
+          <p class="site-footer__kicker">{locale === "ja" ? "INQUIRY DESK" : "INQUIRY DESK"}</p>
+          <CardTitle>{formHeading}</CardTitle>
+          <CardDescription>
+            {locale === "ja"
+              ? "Share your equipment, process, or repair requirements and our team will follow up."
+              : "Share your equipment, process, or repair requirements and our team will follow up."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form class="contact-form" data-contact-form>
+            <input type="hidden" name="locale" value={locale} />
+            <input
+              type="text"
+              name="website"
+              tabindex="-1"
+              autocomplete="off"
+              hidden
+              aria-hidden="true"
+            />
+
+            <div class="contact-field">
+              <Label htmlFor="contact-name">{content.formLabels.name}</Label>
+              <Input id="contact-name" name="name" type="text" required />
+            </div>
+
+            <div class="contact-field">
+              <Label htmlFor="contact-company">{content.formLabels.company}</Label>
+              <Input id="contact-company" name="company" type="text" required />
+            </div>
+
+            <div class="contact-field">
+              <Label htmlFor="contact-email">{content.formLabels.email}</Label>
+              <Input id="contact-email" name="email" type="email" required />
+            </div>
+
+            <div class="contact-field">
+              <Label htmlFor="contact-phone">{content.formLabels.phone}</Label>
+              <Input id="contact-phone" name="phone" type="tel" required />
+            </div>
+
+            <div class="contact-field contact-form__full">
+              <Label htmlFor="contact-message">{content.formLabels.message}</Label>
+              <Textarea id="contact-message" name="message" rows={5} required />
+            </div>
+
+            <p class="contact-form__status" data-contact-status></p>
+            <Button className="contact-form__submit" type="submit">
+              {content.formLabels.submit}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      <Card className="contact-info-card" data-reveal data-delay="100">
+        <CardHeader>
+          <p class="site-footer__kicker">{locale === "ja" ? "DIRECT CHANNELS" : "DIRECT CHANNELS"}</p>
+          <CardTitle>{infoHeading}</CardTitle>
+          <CardDescription>
+            {locale === "ja"
+              ? "Reach Boheng through the channels below for technical consultation and commercial coordination."
+              : "Reach Boheng through the channels below for technical consultation and commercial coordination."}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div class="contact-list">
+            {
+              content.details.map((detail, index) => (
+                <article class="contact-item">
+                  <span class="contact-item__icon" aria-hidden="true">{index + 1}</span>
+                  <div class="contact-item__body">
+                    <strong>{detail.label}</strong>
+                    <p>{detail.value}</p>
+                  </div>
+                </article>
+              ))
+            }
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+    <div class="map-shell" data-reveal>
+      <div class="map-shell__toolbar">
+        <div class="map-shell__meta">
+          <strong>{locale === "ja" ? "COMPANY LOCATION" : "COMPANY LOCATION"}</strong>
+          <span>{addressDetail}</span>
+        </div>
+        <div class="map-shell__actions">
+          <a href={amapUrl} target="_blank" rel="noreferrer">在高德打开</a>
+          <a href={baiduMapUrl} target="_blank" rel="noreferrer">在百度打开</a>
+        </div>
+      </div>
+      <div class="map-embed" aria-label={locale === "ja" ? "Company location map" : "Company location map"}>
+        <img
+          class="map-embed__media"
+          src={baiduStaticMapUrl}
+          alt={`${companyName} ${mapPinLabel}`}
+          loading="lazy"
+          width="960"
+          height="420"
+        />
+        <div class="map-embed__shade" aria-hidden="true"></div>
+        <div class="map-embed__pin">
+          <strong>{companyName}</strong>
+          <span>{mapPinLabel}</span>
+        </div>
+        <div class="map-embed__note">
+          <span>{mapNote}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script is:inline>
+  const form = document.querySelector("[data-contact-form]");
+  const status = document.querySelector("[data-contact-status]");
+
+  if (form instanceof HTMLFormElement && status instanceof HTMLElement) {
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      status.textContent = "";
+
+      const formData = new FormData(form);
+      const payload = Object.fromEntries(formData.entries());
+
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json().catch(() => ({
+        ok: false,
+        message: "Request failed.",
+      }));
+
+      status.textContent = result.message ?? "";
+
+      if (response.ok) {
+        form.reset();
+        const localeInput = form.querySelector('input[name="locale"]');
+        if (localeInput instanceof HTMLInputElement) {
+          localeInput.value = localeInput.defaultValue;
+        }
+      }
+    });
+  }
+</script>

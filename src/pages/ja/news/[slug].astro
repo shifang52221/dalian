@@ -1,0 +1,45 @@
+---
+import NewsDetail from "../../../components/news/NewsDetail.astro";
+import { getNewsList } from "../../../lib/content-api";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const slug = Astro.params.slug ?? "";
+const allItems = await getNewsList("ja");
+const item = allItems.find((entry) => entry.slug === slug);
+
+const relatedItems = allItems.filter((entry) => entry.slug !== slug).slice(0, 3);
+const title = item
+  ? `${item.title} | 大连博恒新技术有限公司`
+  : "ニュースが見つかりません | 大连博恒新技术有限公司";
+const description = item?.summary ?? "指定されたニュースは見つかりませんでした。";
+
+if (!item) {
+  Astro.response.status = 404;
+}
+---
+
+<BaseLayout
+  locale="ja"
+  lang="ja-JP"
+  title={title}
+  description={description}
+>
+  {
+    item ? (
+      <NewsDetail item={item} locale="ja" relatedItems={relatedItems} />
+    ) : (
+      <section class="section section--light">
+        <div class="section__inner">
+          <div class="section__heading section__heading--center" data-reveal>
+            <p class="eyebrow">ニュース</p>
+            <h1 class="section__title">該当するニュースが見つかりません</h1>
+            <p class="section__subtitle">
+              このリンクのニュースは存在しないか、まだ公開されていません。ニュース一覧をご確認ください。
+            </p>
+            <a class="button button--primary" href="/ja/news">ニュース一覧へ戻る</a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

@@ -1,0 +1,20 @@
+[
+  {
+    "category_zh": "连铸设备",
+    "category_ja": "連鋳設備",
+    "description_zh": "拉矫机辊子、连铸辊、辊套等产品。",
+    "description_ja": "矯正ロール、連鋳ロール、スリーブなど。",
+    "tags_zh": ["Cr13 系列", "Cr14 系列", "新制与修复"],
+    "tags_ja": ["Cr13 系", "Cr14 系", "新作・補修"],
+    "sort_order": 1
+  },
+  {
+    "category_zh": "连轧设备",
+    "category_ja": "圧延設備",
+    "description_zh": "助卷辊、导辊、层流辊等产品。",
+    "description_ja": "ピンチロール、ガイドロール、層流ロールなど。",
+    "tags_zh": ["Cr8-Mo-W-Co", "Ni-Cr-B-Si"],
+    "tags_ja": ["Cr8-Mo-W-Co", "Ni-Cr-B-Si"],
+    "sort_order": 2
+  }
+]

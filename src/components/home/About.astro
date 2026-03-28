@@ -1,0 +1,58 @@
+---
+interface Props {
+  content: {
+    eyebrow: string;
+    title: string;
+    description: string;
+    points: string[];
+    badge: { value: string; label: string };
+    stats: Array<{ value: string; label: string }>;
+  };
+  image?: {
+    src: string;
+    alt: string;
+  };
+}
+
+const { content, image } = Astro.props;
+const aboutParagraphs = content.description.split("\n\n").filter(Boolean);
+---
+
+<section class="section about-shell" id="about">
+  <div class="section__inner">
+    <div class="about-grid about-grid--reference">
+      <div class="about-image-card about-image-card--reference about-image-card--dalian" data-reveal>
+        {image && <img src={image.src} alt={image.alt} />}
+      </div>
+
+      <div class="about-content-card about-content-card--reference" data-reveal data-delay="100">
+        <div class="about-copy-flow about-copy-flow--enterprise">
+          <div class="about-shell__headline about-shell__headline--inside about-motion-block">
+            <p class="eyebrow">{content.eyebrow}</p>
+            <h2 class="section__title">{content.title}</h2>
+          </div>
+
+          <div class="about-enterprise-copy">
+            {
+              aboutParagraphs.map((paragraph) => (
+                <p class="about-enterprise-copy__paragraph about-motion-line">{paragraph}</p>
+              ))
+            }
+          </div>
+
+          <div class="about-enterprise-points about-points-grid">
+            {
+              content.points.map((point, index) => (
+                <div class="feature-line feature-line--about about-motion-line">
+                  <span class="feature-line__dot" aria-hidden="true"></span>
+                  <p>{point}</p>
+                  <span class="about-point__index">0{index + 1}</span>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
