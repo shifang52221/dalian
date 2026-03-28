@@ -4606,6 +4606,8 @@ img {
   }
 
   .navbar-collapse {
+    position: relative;
+    isolation: isolate;
     padding: 14px 0 12px;
   }
 
@@ -4613,7 +4615,22 @@ img {
     display: block;
   }
 
+  .navbar-collapse.is-open::before {
+    content: "";
+    position: absolute;
+    inset: 0 calc(50% - 50vw);
+    z-index: 0;
+    background: rgba(22, 58, 89, 0.96);
+    border-top: 1px solid rgba(169, 217, 255, 0.12);
+    border-bottom: 1px solid rgba(169, 217, 255, 0.08);
+    box-shadow: 0 20px 34px rgba(8, 24, 40, 0.18);
+    backdrop-filter: blur(14px);
+    pointer-events: none;
+  }
+
   .navbar__actions {
+    position: relative;
+    z-index: 1;
     flex-direction: column;
     align-items: stretch;
     gap: 14px;
