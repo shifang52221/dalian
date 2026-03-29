@@ -39,6 +39,7 @@ export interface HomeHeroRecord {
   highlights_ja?: unknown;
   stats_zh?: unknown;
   stats_ja?: unknown;
+  hero_image?: string;
   is_published?: boolean;
   [key: string]: unknown;
 }
@@ -57,6 +58,7 @@ export interface HomeAboutRecord {
   badge_label_ja?: string;
   stats_zh?: unknown;
   stats_ja?: unknown;
+  image?: string;
   image_alt_zh?: string;
   image_alt_ja?: string;
   is_published?: boolean;

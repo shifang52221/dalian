@@ -1,5 +1,6 @@
 import type { Locale } from "../../lib/i18n";
 import type { SiteSettingsView } from "../../types/content";
+import type { ImageAsset } from "../image-manifest";
 import { getSiteCopy } from "../site-copy";
 
 export interface HomeContent {
@@ -13,6 +14,7 @@ export interface HomeContent {
     secondaryCta: string;
     highlights: string[];
     stats: Array<{ value: string; label: string }>;
+    image?: ImageAsset;
   };
   about: {
     eyebrow: string;
@@ -21,11 +23,17 @@ export interface HomeContent {
     points: string[];
     badge: { value: string; label: string };
     stats: Array<{ value: string; label: string }>;
+    image?: ImageAsset;
   };
   capabilities: {
     eyebrow: string;
     title: string;
-    items: Array<{ title: string; description: string }>;
+    items: Array<{
+      title: string;
+      description: string;
+      previewGroup?: string;
+      image?: ImageAsset;
+    }>;
   };
   advantages: {
     eyebrow: string;
@@ -35,7 +43,12 @@ export interface HomeContent {
   projects: {
     eyebrow: string;
     title: string;
-    categories: Array<{ title: string; description: string; tags: string[] }>;
+    categories: Array<{
+      title: string;
+      description: string;
+      tags: string[];
+      image?: ImageAsset;
+    }>;
   };
   testimonials: {
     eyebrow: string;

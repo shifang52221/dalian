@@ -59,6 +59,7 @@
       { "name": "highlights_ja", "type": "json" },
       { "name": "stats_zh", "type": "json" },
       { "name": "stats_ja", "type": "json" },
+      { "name": "hero_image", "type": "file", "maxSelect": 1 },
       { "name": "is_published", "type": "bool" }
     ]
   },
@@ -83,6 +84,7 @@
       { "name": "badge_label_ja", "type": "text" },
       { "name": "stats_zh", "type": "json" },
       { "name": "stats_ja", "type": "json" },
+      { "name": "image", "type": "file", "maxSelect": 1 },
       { "name": "image_alt_zh", "type": "text" },
       { "name": "image_alt_ja", "type": "text" },
       { "name": "is_published", "type": "bool" }
@@ -118,6 +120,7 @@
       { "name": "description_ja", "type": "editor" },
       { "name": "icon_key", "type": "text" },
       { "name": "preview_group", "type": "text" },
+      { "name": "preview_image", "type": "file", "maxSelect": 1 },
       { "name": "sort_order", "type": "number" },
       { "name": "is_published", "type": "bool" }
     ]
@@ -136,6 +139,7 @@
       { "name": "description_ja", "type": "editor" },
       { "name": "tags_zh", "type": "json" },
       { "name": "tags_ja", "type": "json" },
+      { "name": "image", "type": "file", "maxSelect": 1 },
       { "name": "sort_order", "type": "number" },
       { "name": "is_published", "type": "bool" }
     ]

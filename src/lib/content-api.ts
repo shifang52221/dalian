@@ -251,6 +251,25 @@ function buildMediaProxyUrl(
   return `/api/media/${encodeURIComponent(collectionName)}/${encodeURIComponent(resolvedRecordId)}/${encodeURIComponent(resolvedFilename)}`;
 }
 
+function buildMediaAsset(
+  collectionName: string,
+  recordId: unknown,
+  filename: unknown,
+  alt: unknown,
+) {
+  const src = buildMediaProxyUrl(collectionName, recordId, filename);
+  const resolvedAlt = String(alt ?? "").trim();
+
+  if (!src) {
+    return undefined;
+  }
+
+  return {
+    src,
+    alt: resolvedAlt,
+  };
+}
+
 function withCmsTimeout<T>(promise: Promise<T>, timeoutMs = CMS_REQUEST_TIMEOUT_MS) {
   return Promise.race<T>([
     promise,
@@ -461,6 +480,17 @@ export async function getHomePageContent(
         if (stats) {
           result.hero.stats = stats;
         }
+
+        const heroImage = buildMediaAsset(
+          "home_hero",
+          heroRecord.id,
+          heroRecord.hero_image,
+          localizedHero.title ?? localizedHero.eyebrow ?? result.hero.title,
+        );
+
+        if (heroImage) {
+          result.hero.image = heroImage;
+        }
       }
 
       const aboutSection = sectionMap.get("about");
@@ -500,14 +530,34 @@ export async function getHomePageContent(
         if (stats) {
           result.about.stats = stats;
         }
+
+        const aboutImage = buildMediaAsset(
+          "home_about",
+          aboutRecord.id,
+          aboutRecord.image,
+          localizedAbout.image_alt ?? localizedAbout.title ?? result.about.title,
+        );
+
+        if (aboutImage) {
+          result.about.image = aboutImage;
+        }
       }
 
       if (capabilities.length > 0) {
         result.capabilities.items = sortBySortOrder(capabilities.filter(isPublished)).map((item) => {
           const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
+          const previewImage = buildMediaAsset(
+            "capabilities",
+            item.id,
+            item.preview_image,
+            localized.title,
+          );
+
           return {
             title: String(localized.title ?? ""),
             description: String(localized.description ?? ""),
+            previewGroup: String(item.preview_group ?? "").trim() || undefined,
+            image: previewImage,
           };
         });
       }
@@ -529,10 +579,18 @@ export async function getHomePageContent(
         result.projects.categories = sortBySortOrder(productCases.filter(isPublished)).map((item) => {
           const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
           const tags = locale === "ja" ? item.tags_ja : item.tags_zh;
+          const projectImage = buildMediaAsset(
+            "product_cases",
+            item.id,
+            item.image,
+            localized.category,
+          );
+
           return {
             title: String(localized.category ?? ""),
             description: String(localized.description ?? ""),
             tags: Array.isArray(tags) ? tags.map((tag) => String(tag)) : [],
+            image: projectImage,
           };
         });
       }

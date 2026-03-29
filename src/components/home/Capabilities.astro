@@ -3,12 +3,62 @@ interface Props {
   content: {
     eyebrow: string;
     title: string;
-    items: Array<{ title: string; description: string }>;
+    items: Array<{
+      title: string;
+      description: string;
+      previewGroup?: string;
+      image?: {
+        src: string;
+        alt: string;
+      };
+    }>;
   };
 }
 
 const { content } = Astro.props;
 const capabilityHoverMedia = new Map([
+  [
+    "maihu",
+    {
+      src: "/images/capabilities/maihu.jpg",
+      alt: "Submerged arc welding equipment photo",
+    },
+  ],
+  [
+    "minghu",
+    {
+      src: "/images/capabilities/minghu.jpg",
+      alt: "Open arc welding equipment photo",
+    },
+  ],
+  [
+    "denglizi",
+    {
+      src: "/images/capabilities/denglizi.jpg",
+      alt: "Plasma cladding equipment photo",
+    },
+  ],
+  [
+    "huoyan",
+    {
+      src: "/images/capabilities/huoyan.jpg",
+      alt: "Flame spray equipment photo",
+    },
+  ],
+  [
+    "zhijian",
+    {
+      src: "/images/capabilities/zhijian.jpg",
+      alt: "Quality inspection photo",
+    },
+  ],
+  [
+    "rechuli",
+    {
+      src: "/images/capabilities/rechuli.jpg",
+      alt: "Heat treatment and assembly photo",
+    },
+  ],
   [
     "埋弧堆焊",
     {
@@ -125,7 +175,7 @@ const capabilityIcons = [
     <div class="capabilities-grid">
       {
         content.items.map((item, index) => {
-          const hoverMedia = capabilityHoverMedia.get(item.title);
+          const hoverMedia = item.image ?? capabilityHoverMedia.get(item.previewGroup ?? item.title);
 
           return (
             <article

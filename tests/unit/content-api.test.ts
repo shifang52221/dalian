@@ -63,6 +63,7 @@ describe("mapLocaleRecord", () => {
       home_sections: [],
       home_hero: [
         {
+          id: "hero-record",
           eyebrow_zh: "钢铁行业辊道设备与表面工程",
           eyebrow_ja: "鉄鋼向けロール設備・表面技術",
           title_zh: "结构化首页主标题",
@@ -85,11 +86,13 @@ describe("mapLocaleRecord", () => {
             { value: "15トン", label: "埋弧肉盛設備" },
             { value: "3トン", label: "明弧肉盛設備" },
           ],
+          hero_image: "hero-main.webp",
           is_published: true,
         },
       ],
       home_about: [
         {
+          id: "about-record",
           eyebrow_zh: "公司简介",
           eyebrow_ja: "企業紹介",
           title_zh: "结构化企业简介标题",
@@ -103,15 +106,20 @@ describe("mapLocaleRecord", () => {
           badge_label_ja: "製造拠点",
           stats_zh: [{ value: "4000-5000", label: "年堆焊能力" }],
           stats_ja: [{ value: "4000-5000", label: "年間肉盛能力" }],
+          image: "about-card.webp",
+          image_alt_zh: "企业简介大连风景图",
+          image_alt_ja: "企業紹介の大連風景画像",
           is_published: true,
         },
       ],
       capabilities: [
         {
+          id: "capability-record",
           title_zh: "埋弧堆焊",
           title_ja: "サブマージアーク肉盛",
           description_zh: "能力一",
           description_ja: "能力一",
+          preview_image: "maihu.jpg",
           sort_order: 1,
           is_published: true,
         },
@@ -136,12 +144,14 @@ describe("mapLocaleRecord", () => {
       ],
       product_cases: [
         {
+          id: "product-record",
           category_zh: "连铸设备",
           category_ja: "連鋳設備",
           description_zh: "案例一",
           description_ja: "事例一",
           tags_zh: ["Cr13 系列", "新制与修复"],
           tags_ja: ["Cr13 系", "新作・補修"],
+          image: "gallery-case.webp",
           sort_order: 1,
           is_published: true,
         },
@@ -194,24 +204,43 @@ describe("mapLocaleRecord", () => {
       { value: "15吨", label: "埋弧堆焊设备" },
       { value: "3吨", label: "明弧堆焊设备" },
     ]);
+    expect(result.hero.image).toEqual({
+      src: "/api/media/home_hero/hero-record/hero-main.webp",
+      alt: "结构化首页主标题",
+    });
 
     expect(result.about.title).toBe("结构化企业简介标题");
     expect(result.about.description).toBe("结构化企业简介正文");
     expect(result.about.points).toEqual(["第一条", "第二条", "第三条"]);
     expect(result.about.badge).toEqual({ value: "DALIAN", label: "制造基地" });
     expect(result.about.stats).toEqual([{ value: "4000-5000", label: "年堆焊能力" }]);
+    expect(result.about.image).toEqual({
+      src: "/api/media/home_about/about-record/about-card.webp",
+      alt: "企业简介大连风景图",
+    });
 
     expect(result.advantages.items).toEqual([
       { title: "工艺经验", description: "优势一" },
     ]);
     expect(result.capabilities.items).toEqual([
-      { title: "埋弧堆焊", description: "能力一" },
+      {
+        title: "埋弧堆焊",
+        description: "能力一",
+        image: {
+          src: "/api/media/capabilities/capability-record/maihu.jpg",
+          alt: "埋弧堆焊",
+        },
+      },
     ]);
     expect(result.projects.categories).toEqual([
       {
         title: "连铸设备",
         description: "案例一",
         tags: ["Cr13 系列", "新制与修复"],
+        image: {
+          src: "/api/media/product_cases/product-record/gallery-case.webp",
+          alt: "连铸设备",
+        },
       },
     ]);
     expect(result.testimonials.items).toEqual([

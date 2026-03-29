@@ -24,8 +24,8 @@ const images = getImageManifest();
   description="大連博恒新技術有限公司の日中バイリンガル工業企業サイト。"
   siteSettings={content.siteSettings}
 >
-  <Hero content={content.hero} image={images.heroSpotlight} />
-  <About content={content.about} image={images.about} />
+  <Hero content={content.hero} image={content.hero.image ?? images.heroSpotlight} />
+  <About content={content.about} image={content.about.image ?? images.about} />
   <Capabilities content={content.capabilities} />
   <Advantages content={content.advantages} />
   <Projects content={content.projects} images={images.gallery} />
