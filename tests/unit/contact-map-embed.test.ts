@@ -3,7 +3,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
 describe("contact map embed", () => {
-  it("renders a static location map card and external map actions", () => {
+  it("renders a realistic static location map card and external map actions", () => {
     const component = readFileSync(
       resolve("f:/www/www13dalian/src/components/home/ContactSection.astro"),
       "utf8",
@@ -15,8 +15,7 @@ describe("contact map embed", () => {
 
     expect(component).toContain("map-embed");
     expect(component).toContain("map-embed__media");
-    expect(component).toContain('/images/factory-location-map.svg');
-    expect(component).not.toContain("api.map.baidu.com/staticimage/v2");
+    expect(component).toContain("api.map.baidu.com/staticimage/v2");
     expect(component).toContain("map-embed__pin");
     expect(component).toContain("https://www.amap.com/search?query=");
     expect(component).toContain("map.baidu.com");
