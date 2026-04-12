@@ -19,10 +19,13 @@ describe("public content filtering", () => {
                 is_published: false,
                 title_zh: "draft zh",
                 title_ja: "draft ja",
+                title_en: "draft en",
                 summary_zh: "draft summary",
                 summary_ja: "draft summary",
+                summary_en: "draft summary en",
                 content_zh: "draft body",
                 content_ja: "draft body",
+                content_en: "draft body en",
               },
               {
                 slug: "public-item",
@@ -30,10 +33,13 @@ describe("public content filtering", () => {
                 is_published: true,
                 title_zh: "public zh",
                 title_ja: "public ja",
+                title_en: "public en",
                 summary_zh: "public summary",
                 summary_ja: "public summary",
+                summary_en: "public summary en",
                 content_zh: "public body",
                 content_ja: "public body",
+                content_en: "public body en",
               },
             ];
           },
@@ -45,6 +51,43 @@ describe("public content filtering", () => {
 
     expect(result).toHaveLength(1);
     expect(result[0]?.slug).toBe("public-item");
+  });
+
+  it("keeps english public news output localized after filtering", async () => {
+    const client = {
+      collection(name: string) {
+        return {
+          async getFullList() {
+            if (name !== "news") {
+              return [];
+            }
+
+            return [
+              {
+                slug: "public-item",
+                published_at: "2026-03-16",
+                is_published: true,
+                title_zh: "public zh",
+                title_ja: "public ja",
+                title_en: "public en",
+                summary_zh: "public summary",
+                summary_ja: "public summary",
+                summary_en: "public summary en",
+                content_zh: "public body",
+                content_ja: "public body",
+                content_en: "public body en",
+              },
+            ];
+          },
+        };
+      },
+    };
+
+    const result = await getNewsList("en", client);
+
+    expect(result[0]?.title).toBe("public en");
+    expect(result[0]?.summary).toBe("public summary en");
+    expect(result[0]?.content).toEqual(["public body en"]);
   });
 
   it("ignores unpublished homepage section overrides", async () => {

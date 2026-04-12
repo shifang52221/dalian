@@ -1,6 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 describe("contact api error handling", () => {
+  function createValidFormData(locale: "zh" | "ja" = "zh") {
+    const formData = new FormData();
+    formData.set("name", "张三");
+    formData.set("company", "测试公司");
+    formData.set("email", "test@example.com");
+    formData.set("phone", "13591839861");
+    formData.set("locale", locale);
+    formData.set("message", "需要帮助");
+    return formData;
+  }
+
   beforeEach(() => {
     vi.resetModules();
     vi.clearAllMocks();
@@ -74,6 +85,7 @@ describe("contact api error handling", () => {
         method: "POST",
         headers: {
           "content-type": "application/json",
+          origin: "http://example.com",
         },
         body: JSON.stringify({
           name: "张三",
@@ -93,16 +105,63 @@ describe("contact api error handling", () => {
     expect(body.ok).toBe(true);
   });
 
+  it("accepts same-origin contact submissions", async () => {
+    const { POST } = await import("../../src/pages/api/contact");
+
+    const response = await POST({
+      request: new Request("http://example.com/api/contact", {
+        method: "POST",
+        body: createValidFormData(),
+        headers: {
+          origin: "http://example.com",
+          "x-real-ip": "203.0.113.20",
+        },
+      }),
+    } as never);
+
+    expect(response.status).toBe(200);
+  });
+
+  it("rejects cross-origin contact submissions", async () => {
+    const { submitContactMessage } = await import("../../src/actions/contact");
+    const { POST } = await import("../../src/pages/api/contact");
+
+    const response = await POST({
+      request: new Request("http://example.com/api/contact", {
+        method: "POST",
+        body: createValidFormData(),
+        headers: {
+          origin: "https://evil.example.com",
+          "x-real-ip": "203.0.113.21",
+        },
+      }),
+    } as never);
+
+    expect(response.status).toBe(403);
+    expect(submitContactMessage).not.toHaveBeenCalled();
+  });
+
+  it("accepts requests with a same-origin referer when origin is absent", async () => {
+    const { POST } = await import("../../src/pages/api/contact");
+
+    const response = await POST({
+      request: new Request("http://example.com/api/contact", {
+        method: "POST",
+        body: createValidFormData(),
+        headers: {
+          referer: "http://example.com/contact",
+          "x-real-ip": "203.0.113.22",
+        },
+      }),
+    } as never);
+
+    expect(response.status).toBe(200);
+  });
+
   it("rejects honeypot submissions before persistence", async () => {
     const { submitContactMessage } = await import("../../src/actions/contact");
     const { POST } = await import("../../src/pages/api/contact");
-    const formData = new FormData();
-    formData.set("name", "张三");
-    formData.set("company", "测试公司");
-    formData.set("email", "test@example.com");
-    formData.set("phone", "13591839861");
-    formData.set("locale", "zh");
-    formData.set("message", "需要帮助");
+    const formData = createValidFormData();
     formData.set("website", "https://spam.example.com");
 
     const response = await POST({
@@ -110,7 +169,8 @@ describe("contact api error handling", () => {
         method: "POST",
         body: formData,
         headers: {
-          "x-forwarded-for": "203.0.113.10",
+          origin: "http://example.com",
+          "x-real-ip": "203.0.113.10",
         },
       }),
     } as never);
@@ -123,20 +183,13 @@ describe("contact api error handling", () => {
     const { POST } = await import("../../src/pages/api/contact");
 
     const makeRequest = async () => {
-      const formData = new FormData();
-      formData.set("name", "张三");
-      formData.set("company", "测试公司");
-      formData.set("email", "test@example.com");
-      formData.set("phone", "13591839861");
-      formData.set("locale", "zh");
-      formData.set("message", "需要帮助");
-
       return POST({
         request: new Request("http://example.com/api/contact", {
           method: "POST",
-          body: formData,
+          body: createValidFormData(),
           headers: {
-            "x-forwarded-for": "203.0.113.11",
+            origin: "http://example.com",
+            "x-real-ip": "203.0.113.11",
           },
         }),
       } as never);
@@ -146,5 +199,27 @@ describe("contact api error handling", () => {
     expect((await makeRequest()).status).toBe(200);
     expect((await makeRequest()).status).toBe(200);
     expect((await makeRequest()).status).toBe(429);
+  });
+
+  it("uses x-real-ip ahead of spoofed forwarded chains for rate limiting", async () => {
+    const { POST } = await import("../../src/pages/api/contact");
+
+    const makeRequest = async (spoofedIp: string) =>
+      POST({
+        request: new Request("http://example.com/api/contact", {
+          method: "POST",
+          body: createValidFormData(),
+          headers: {
+            origin: "http://example.com",
+            "x-real-ip": "203.0.113.30",
+            "x-forwarded-for": `${spoofedIp}, 203.0.113.30`,
+          },
+        }),
+      } as never);
+
+    expect((await makeRequest("198.51.100.1")).status).toBe(200);
+    expect((await makeRequest("198.51.100.2")).status).toBe(200);
+    expect((await makeRequest("198.51.100.3")).status).toBe(200);
+    expect((await makeRequest("198.51.100.4")).status).toBe(429);
   });
 });

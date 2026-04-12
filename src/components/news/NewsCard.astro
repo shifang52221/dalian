@@ -9,7 +9,8 @@ interface Props {
 }
 
 const { item, locale, featured = false } = Astro.props;
-const actionLabel = locale === "ja" ? "詳しく見る" : "查看详情";
+const actionLabel =
+  locale === "ja" ? "詳しく見る" : locale === "en" ? "Read More" : "查看详情";
 const cardKicker = locale === "ja" ? "NEWS UPDATE" : "NEWS UPDATE";
 const cardBadge = featured ? "FEATURED" : "BH";
 ---

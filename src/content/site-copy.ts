@@ -79,6 +79,36 @@ const siteCopy: Record<Locale, SiteCopy> = {
     },
     newsPreviewAction: "続きを読む",
   },
+  en: {
+    companyName: "Dalian Boheng New Technology Co., Ltd.",
+    nav: [
+      { href: "/en/#home", label: "Home" },
+      { href: "/en/#about", label: "Company" },
+      { href: "/en/#capabilities", label: "Capabilities" },
+      { href: "/en/#projects", label: "Projects" },
+      { href: "/en/news", label: "News" },
+      { href: "/en/#contact", label: "Contact" },
+    ],
+    footer: {
+      title: "Surface engineering and roller equipment manufacturing for the steel industry",
+      description:
+        "Dalian Boheng New Technology Co., Ltd. focuses on continuous casting, rolling-line equipment, spare parts, and long-term surface engineering solutions.",
+      contactTitle: "Contact",
+      quickLinksTitle: "Quick Links",
+      serviceTitle: "Core Areas",
+      address: "Hanjia Village, Sanjianpu Subdistrict, Lushunkou District, Dalian, Liaoning, China",
+      phone: "86-13591839861",
+      email: "710877810@sina.com",
+      quickLinks: [
+        { href: "/en/#home", label: "Home" },
+        { href: "/en/#about", label: "Company" },
+        { href: "/en/#capabilities", label: "Capabilities" },
+        { href: "/en/news", label: "News" },
+      ],
+      services: ["Casting Equipment", "Rolling Equipment", "Surface Engineering", "Spare Part Repair"],
+    },
+    newsPreviewAction: "View Details",
+  },
 };
 
 export function getSiteCopy(locale: Locale) {

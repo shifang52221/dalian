@@ -13,6 +13,10 @@ const messages = {
     success: "お問い合わせを受け付けました。追ってご連絡いたします。",
     error: "送信に失敗しました。しばらくしてから再度お試しください。",
   },
+  en: {
+    success: "Your inquiry has been submitted. We will contact you soon.",
+    error: "Submission failed. Please try again later.",
+  },
 } as const;
 
 type ContactLocale = keyof typeof messages;
@@ -33,7 +37,7 @@ function buildJsonResponse(
 
 function getRequestedLocale(formData: FormData): ContactLocale {
   const requestedLocale = formData.get("locale");
-  return requestedLocale === "ja" ? "ja" : "zh";
+  return requestedLocale === "ja" || requestedLocale === "en" ? requestedLocale : "zh";
 }
 
 async function getSubmissionData(request: Request) {
@@ -56,21 +60,46 @@ async function getSubmissionData(request: Request) {
 }
 
 function getClientAddress(request: Request) {
-  const forwardedFor = request.headers.get("x-forwarded-for");
-  if (forwardedFor) {
-    const [first] = forwardedFor.split(",");
-    if (first?.trim()) {
-      return first.trim();
-    }
-  }
-
   const realIp = request.headers.get("x-real-ip");
   if (realIp?.trim()) {
     return realIp.trim();
   }
 
+  const forwardedFor = request.headers.get("x-forwarded-for");
+  if (forwardedFor) {
+    const entries = forwardedFor
+      .split(",")
+      .map((entry) => entry.trim())
+      .filter(Boolean);
+    const last = entries.at(-1);
+
+    if (last) {
+      return last;
+    }
+  }
+
   const userAgent = request.headers.get("user-agent")?.trim();
   return userAgent ? `ua:${userAgent.slice(0, 120)}` : "unknown";
+}
+
+function isAllowedOrigin(request: Request) {
+  const requestOrigin = new URL(request.url).origin;
+  const originHeader = request.headers.get("origin")?.trim();
+
+  if (originHeader) {
+    return originHeader === requestOrigin;
+  }
+
+  const refererHeader = request.headers.get("referer")?.trim();
+  if (!refererHeader) {
+    return true;
+  }
+
+  try {
+    return new URL(refererHeader).origin === requestOrigin;
+  } catch {
+    return false;
+  }
 }
 
 function isRateLimited(request: Request) {
@@ -96,6 +125,16 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const formData = await getSubmissionData(request);
     locale = getRequestedLocale(formData);
+
+    if (!isAllowedOrigin(request)) {
+      return buildJsonResponse(
+        {
+          ok: false,
+          message: messages[locale].error,
+        },
+        403,
+      );
+    }
 
     if (String(formData.get("website") ?? "").trim()) {
       return buildJsonResponse(

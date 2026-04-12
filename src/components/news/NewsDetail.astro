@@ -19,6 +19,14 @@ const labels =
         relatedTitle: "関連ニュース",
         backLabel: "ニュース一覧へ戻る",
       }
+    : locale === "en"
+      ? {
+          breadcrumbHome: "Home",
+          breadcrumbNews: "News",
+          publishLabel: "Published",
+          relatedTitle: "More News",
+          backLabel: "Back to News",
+        }
     : {
         breadcrumbHome: "首页",
         breadcrumbNews: "新闻中心",
@@ -27,7 +35,8 @@ const labels =
         backLabel: "返回新闻中心",
       };
 
-const newsIndexUrl = locale === "ja" ? "/ja/news" : "/news";
+const newsIndexUrl =
+  locale === "ja" ? "/ja/news" : locale === "en" ? "/en/news" : "/news";
 const hasRichContent = Boolean(item.contentHtml?.trim());
 const paragraphs = !hasRichContent && item.content.length > 0 ? item.content : [item.summary];
 const [leadParagraph, ...bodyParagraphs] = paragraphs;
@@ -37,7 +46,9 @@ const [leadParagraph, ...bodyParagraphs] = paragraphs;
   <div class="section__inner">
     <header class="news-detail__header" data-reveal>
       <div class="news-breadcrumb">
-        <a href={locale === "ja" ? "/ja/" : "/"}>{labels.breadcrumbHome}</a>
+        <a href={locale === "ja" ? "/ja/" : locale === "en" ? "/en/" : "/"}>
+          {labels.breadcrumbHome}
+        </a>
         <span>/</span>
         <a href={newsIndexUrl}>{labels.breadcrumbNews}</a>
         <span>/</span>

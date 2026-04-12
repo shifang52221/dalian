@@ -6,9 +6,11 @@ describe("homepage performance structure", () => {
   it("passes preloaded site settings into the shared layout on both homepages", () => {
     const zhPage = readFileSync(resolve("f:/www/www13dalian/src/pages/index.astro"), "utf8");
     const jaPage = readFileSync(resolve("f:/www/www13dalian/src/pages/ja/index.astro"), "utf8");
+    const enPage = readFileSync(resolve("f:/www/www13dalian/src/pages/en/index.astro"), "utf8");
 
     expect(zhPage).toContain("siteSettings={content.siteSettings}");
     expect(jaPage).toContain("siteSettings={content.siteSettings}");
+    expect(enPage).toContain("siteSettings={content.siteSettings}");
   });
 
   it("marks non-hero homepage images as lazy-loaded", () => {

@@ -2,10 +2,13 @@
   {
     "eyebrow_zh": "公司简介",
     "eyebrow_ja": "企業紹介",
+    "eyebrow_en": "Company Profile",
     "title_zh": "立足大连的钢铁装备与表面强化专业制造工厂",
     "title_ja": "大連を拠点に、鉄鋼設備と表面強化製造を支える",
+    "title_en": "A specialized manufacturing plant in Dalian for steel equipment and surface engineering",
     "description_zh": "大连博恒新技术有限公司，坐落于中国辽东半岛最南端海滨城市 大连，背依中国东北腹地与山东半岛隔海相望，是中国东部沿海集经济、贸易、工业、旅游多元化的重要港口城市。\n\n我公司是钢铁行业连铸、连轧、冷轧等成套辊道设备及备品备件制造的专业化工厂，拥有“堆焊、喷焊、等离子堆焊”等表面强化核心技术、同时拥有不同工况下材料与工艺应用的丰富经验，一直与大连理工大学合作研发相关新技术的应用，不但能够按图制造，还可以根据用户现场工况设计相应涂层，提高关键件的寿命。\n\n我公司拥有比较完备的堆焊、喷焊、热处理、喷丸、装配等生产制造能力，固定的热处理、铆焊、加工等协作单位，以稳定的质量赢得国内外用户的认可。",
     "description_ja": "大連博恒新技術有限公司は中国北方の海浜都市である大連に拠点を置き、鉄鋼業界向けの連鋳・連圧・冷間圧延設備用ロールライン機器および予備部品の製造に注力しています。肉盛、溶射、プラズマ肉盛などの表面強化技術を備え、大連理工大学との継続的な共同研究を通じて、図面製作だけでなく現場条件に応じたコーティング設計にも対応しています。",
+    "description_en": "Dalian Boheng New Technology Co., Ltd. is located in Dalian, the major coastal city at the southern tip of the Liaodong Peninsula. Facing the Northeast China hinterland and the Shandong Peninsula across the sea, Dalian is an important eastern coastal port city integrating economy, trade, industry, and tourism.\n\nOur company is a specialized manufacturer of complete roller conveyor equipment and spare parts for continuous casting, continuous rolling, and cold rolling in the steel industry. We possess core surface engineering technologies such as weld overlay, thermal spraying, and plasma cladding, as well as extensive experience in material and process application under different operating conditions. Through long-term cooperation with Dalian University of Technology, we continue to develop and apply new technologies. We can manufacture according to drawings and also design suitable coatings based on on-site service conditions to improve the life of critical parts.\n\nWe maintain relatively complete production capabilities for weld overlay, spraying, heat treatment, shot blasting, and assembly, together with stable supporting partners for heat treatment, fabrication, and machining. Reliable quality has earned recognition from customers at home and abroad.",
     "points_zh": [
       "以质求生、以严求精、以诚求信是我公司的宗旨。",
       "高效率、低成本，为用户提供高质量的产品及服务是我公司的目标。",
@@ -16,9 +19,15 @@
       "高効率と低コストを両立し、高品質な製品とサービスの提供を目指しています。",
       "顧客の改善要求を技術開発と継続的な革新の方向性としています。"
     ],
+    "points_en": [
+      "Survival through quality, excellence through strict standards, and trust through sincerity are the principles of our company.",
+      "High efficiency and low cost, while delivering high-quality products and services, remain our operating objective.",
+      "Customer improvement requirements are the direction of our technology development and innovation."
+    ],
     "badge_value": "DALIAN",
     "badge_label_zh": "山海港城制造基地",
     "badge_label_ja": "港湾都市の製造拠点",
+    "badge_label_en": "Coastal manufacturing base",
     "stats_zh": [
       { "value": "4000-5000", "label": "年堆焊能力" },
       { "value": "800-1000", "label": "年喷焊能力" }
@@ -27,8 +36,13 @@
       { "value": "4000-5000", "label": "年間肉盛能力" },
       { "value": "800-1000", "label": "年間溶射能力" }
     ],
+    "stats_en": [
+      { "value": "4000-5000", "label": "Annual weld-overlay capacity" },
+      { "value": "800-1000", "label": "Annual spraying capacity" }
+    ],
     "image_alt_zh": "大连海岸城市风景",
     "image_alt_ja": "大連の海辺の都市風景",
+    "image_alt_en": "Dalian coastal city view",
     "is_published": true
   }
 ]

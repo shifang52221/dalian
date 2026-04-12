@@ -15,4 +15,13 @@ describe("site copy", () => {
     expect(copy.nav[0]?.label).toBe("首页");
     expect(copy.footer.contactTitle).toBe("联系信息");
   });
+
+  it("returns launch-ready English navigation labels", () => {
+    const copy = getSiteCopy("en");
+
+    expect(copy.nav[0]?.label).toBe("Home");
+    expect(copy.nav[4]?.href).toBe("/en/news");
+    expect(copy.footer.contactTitle).toBe("Contact");
+    expect(copy.newsPreviewAction).toBe("View Details");
+  });
 });

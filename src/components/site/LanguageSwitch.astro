@@ -9,6 +9,7 @@ interface Props {
 const { currentLocale, currentPath } = Astro.props;
 const zhUrl = getLocaleUrl(currentPath, "zh");
 const jaUrl = getLocaleUrl(currentPath, "ja");
+const enUrl = getLocaleUrl(currentPath, "en");
 ---
 
 <div class="language-switch" aria-label="Language switch">
@@ -16,5 +17,6 @@ const jaUrl = getLocaleUrl(currentPath, "ja");
   <div class="language-switch__track">
     <a class:list={[currentLocale === "zh" && "is-active"]} href={zhUrl}>中文</a>
     <a class:list={[currentLocale === "ja" && "is-active"]} href={jaUrl}>日本語</a>
+    <a class:list={[currentLocale === "en" && "is-active"]} href={enUrl}>EN</a>
   </div>
 </div>

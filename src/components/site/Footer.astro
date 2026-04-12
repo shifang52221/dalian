@@ -11,6 +11,7 @@ interface Props {
 const { locale, siteSettings } = Astro.props;
 const content = getSiteCopy(locale).footer;
 const brandLine = "Precision surface engineering for steel equipment systems.";
+const homePath = locale === "zh" ? "/" : `/${locale}/`;
 ---
 
 <footer class="site-footer">
@@ -18,7 +19,7 @@ const brandLine = "Precision surface engineering for steel equipment systems.";
   <div class="site-footer__inner">
     <div class="site-footer__grid">
       <div data-reveal>
-        <a class="site-footer__brand" href={locale === "ja" ? "/ja/" : "/"}>
+        <a class="site-footer__brand" href={homePath}>
           <span class="site-footer__brand-shell">
             <img
               class="site-footer__brand-logo"

@@ -1,0 +1,77 @@
+---
+import NewsCard from "../../../components/news/NewsCard.astro";
+import { getNewsList } from "../../../lib/content-api";
+import { splitFeaturedNews } from "../../../lib/news-layout";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const items = await getNewsList("en");
+const { featuredItem, archiveItems } = splitFeaturedNews(items);
+---
+
+<BaseLayout
+  locale="en"
+  lang="en"
+  title="News | Dalian Boheng New Technology Co., Ltd."
+  description="View the latest company news, process updates, and delivery progress from Dalian Boheng New Technology Co., Ltd."
+>
+  <section class="section section--light news-editorial-shell">
+    <div class="section__inner">
+      <div class="news-editorial-hero" data-reveal>
+        <div class="news-breadcrumb">
+          <a href="/en/">Home</a>
+          <span>/</span>
+          <strong>News</strong>
+        </div>
+        <p class="eyebrow">NEWSROOM</p>
+        <h1 class="section__title">Company News and Process Updates</h1>
+        <p class="section__subtitle">
+          Presenting Boheng's company updates, process developments, project progress, and delivery information in a layout closer to a premium service-detail page.
+        </p>
+      </div>
+
+      {
+        featuredItem && (
+          <div class="news-featured-layout">
+            <aside class="news-featured-sidebar" data-reveal data-delay="100">
+              <div class="news-featured-note">
+                <p class="news-featured-note__kicker">SECTOR NOTE</p>
+                <h2>Information designed for industrial clients</h2>
+                <p>
+                  This section focuses on equipment manufacturing, surface engineering, process-capability updates, and cooperation progress, using a calm editorial layout that emphasizes structure and industrial credibility.
+                </p>
+              </div>
+              <div class="news-featured-note news-featured-note--contact">
+                <p class="news-featured-note__kicker">PROJECT DESK</p>
+                <p>
+                  If you are evaluating roller equipment, cladding repair, or operating-condition improvement, you can submit your request through the contact section on the homepage.
+                </p>
+                <a class="button button--ghost" href="/en/#contact">Contact Us</a>
+              </div>
+            </aside>
+            <div class="news-featured-main">
+              <NewsCard item={featuredItem} locale="en" featured />
+            </div>
+          </div>
+        )
+      }
+
+      {
+        archiveItems.length > 0 ? (
+          <div class="news-archive-grid">
+            {archiveItems.map((item, index) => (
+              <NewsCard item={item} locale="en" data-delay={`${(index + 1) * 100}`} />
+            ))}
+          </div>
+        ) : (
+          <div class="news-archive-empty" data-reveal data-delay="160">
+            <p class="news-archive-empty__kicker">NEWS DESK</p>
+            <h2>More articles will continue to appear here</h2>
+            <p>
+              Backend news integration is already connected, so newly published articles will automatically grow this list instead of repeating the current featured entry.
+            </p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>

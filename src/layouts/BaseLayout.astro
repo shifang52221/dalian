@@ -9,8 +9,8 @@ import siteEffectsUrl from "../scripts/site-effects.js?url";
 import "../styles/global.css";
 
 interface Props {
-  locale: "zh" | "ja";
-  lang: "zh-CN" | "ja-JP";
+  locale: "zh" | "ja" | "en";
+  lang: "zh-CN" | "ja-JP" | "en";
   title: string;
   description: string;
   siteSettings?: SiteSettingsView;
@@ -18,7 +18,10 @@ interface Props {
 
 const { locale, lang, title, description } = Astro.props;
 const siteSettings = Astro.props.siteSettings ?? await getSiteSettings(locale);
-const isHomePage = Astro.url.pathname === "/" || Astro.url.pathname === "/ja/";
+const isHomePage =
+  Astro.url.pathname === "/" ||
+  Astro.url.pathname === "/ja/" ||
+  Astro.url.pathname === "/en/";
 ---
 
 <!doctype html>

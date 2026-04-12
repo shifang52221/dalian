@@ -1,4 +1,9 @@
-export type Locale = "zh" | "ja";
+export type Locale = "zh" | "ja" | "en";
+
+const localePrefixes: Record<Exclude<Locale, "zh">, string> = {
+  ja: "/ja",
+  en: "/en",
+};
 
 export function getLocaleUrl(pathname: string, locale: Locale) {
   const normalizedPath = normalizePath(pathname);
@@ -8,15 +13,21 @@ export function getLocaleUrl(pathname: string, locale: Locale) {
     return pathWithoutLocale;
   }
 
+  const localePrefix = localePrefixes[locale];
+
   if (pathWithoutLocale === "/") {
-    return "/ja/";
+    return `${localePrefix}/`;
   }
 
-  return `/ja${pathWithoutLocale}`;
+  return `${localePrefix}${pathWithoutLocale}`;
 }
 
 export function getNewsUrl(slug: string, locale: Locale) {
-  return locale === "ja" ? `/ja/news/${slug}` : `/news/${slug}`;
+  if (locale === "zh") {
+    return `/news/${slug}`;
+  }
+
+  return `${localePrefixes[locale]}/news/${slug}`;
 }
 
 function normalizePath(pathname: string) {
@@ -34,12 +45,14 @@ function normalizePath(pathname: string) {
 }
 
 function stripLocalePrefix(pathname: string) {
-  if (pathname === "/ja") {
-    return "/";
-  }
+  for (const prefix of Object.values(localePrefixes)) {
+    if (pathname === prefix) {
+      return "/";
+    }
 
-  if (pathname.startsWith("/ja/")) {
-    return pathname.slice(3) || "/";
+    if (pathname.startsWith(`${prefix}/`)) {
+      return pathname.slice(prefix.length) || "/";
+    }
   }
 
   return pathname;

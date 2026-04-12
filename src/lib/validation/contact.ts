@@ -5,7 +5,7 @@ export const contactSchema = z.object({
   company: z.string().trim().min(1, "Company is required"),
   email: z.email("Valid email is required"),
   phone: z.string().trim().min(1, "Phone is required"),
-  locale: z.enum(["zh", "ja"]),
+  locale: z.enum(["zh", "ja", "en"]),
   message: z.string().trim().min(1, "Message is required"),
 });
 

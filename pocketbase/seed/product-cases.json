@@ -2,30 +2,39 @@
   {
     "category_zh": "连铸设备",
     "category_ja": "連鋳設備",
+    "category_en": "Continuous Casting Equipment",
     "description_zh": "拉矫机辊子、连铸辊、辊套等产品。",
     "description_ja": "矯正ロール、連鋳ロール、スリーブなど。",
+    "description_en": "Products such as straightening rolls, caster rolls, and sleeves for multiple application scenarios.",
     "tags_zh": ["Cr13 系列", "Cr14 系列", "新制与修复"],
     "tags_ja": ["Cr13 系", "Cr14 系", "新作・補修"],
+    "tags_en": ["Cr13 series", "Cr14 series", "New build and repair"],
     "sort_order": 1,
     "is_published": true
   },
   {
     "category_zh": "连轧设备",
     "category_ja": "圧延設備",
+    "category_en": "Continuous Rolling Equipment",
     "description_zh": "助卷辊、导辊、层流辊等产品。",
     "description_ja": "ピンチロール、ガイドロール、層流ロールなど。",
+    "description_en": "Products such as pinch rolls, guide rolls, and laminar rolls for multiple rolling lines.",
     "tags_zh": ["Cr8-Mo-W-Co", "Ni-Cr-B-Si"],
     "tags_ja": ["Cr8-Mo-W-Co", "Ni-Cr-B-Si"],
+    "tags_en": ["Cr8-Mo-W-Co", "Ni-Cr-B-Si"],
     "sort_order": 2,
     "is_published": true
   },
   {
     "category_zh": "其他产品",
     "category_ja": "その他製品",
+    "category_en": "Other Products",
     "description_zh": "包括料斗、法兰、轴套、阀门、转子、汽缸修复等定制化业务。",
     "description_ja": "ホッパー、フランジ、ブッシュ、バルブ、ローター補修なども対応可能です。",
+    "description_en": "Including customized work such as hoppers, flanges, shaft sleeves, valves, rotor repair, and cylinder repair.",
     "tags_zh": ["耐磨层", "修复", "特殊工况"],
     "tags_ja": ["耐摩耗", "補修", "特殊条件"],
+    "tags_en": ["Wear-resistant layers", "Repair", "Special conditions"],
     "sort_order": 3,
     "is_published": true
   }

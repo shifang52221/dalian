@@ -29,4 +29,20 @@ describe("getFallbackHomeContent", () => {
       { value: "3吨", label: "埋弧堆焊设备" },
     ]);
   });
+
+  it("returns complete English homepage content for launch", () => {
+    const en = getFallbackHomeContent("en");
+
+    expect(en.hero.title).toContain("Continuous Casting");
+    expect(en.hero.highlights).toEqual([
+      "Continuous Casting Equipment",
+      "Continuous Rolling Equipment",
+      "Cold Rolling Equipment",
+      "Surface Engineering",
+    ]);
+    expect(en.about.title).toContain("Dalian");
+    expect(en.capabilities.items).toHaveLength(6);
+    expect(en.news.items[0]?.title).toBeTruthy();
+    expect(en.contact.formLabels.submit).toBe("Submit Inquiry");
+  });
 });

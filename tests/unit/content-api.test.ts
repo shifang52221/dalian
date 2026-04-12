@@ -18,6 +18,21 @@ describe("mapLocaleRecord", () => {
     expect(result.title).toBe("日本語タイトル");
   });
 
+  it("returns english locale fields when available", () => {
+    const result = mapLocaleRecord(
+      {
+        title_zh: "中文标题",
+        title_ja: "日本語タイトル",
+        title_en: "English Title",
+        summary_en: "English Summary",
+      },
+      "en",
+    );
+
+    expect(result.title).toBe("English Title");
+    expect(result.summary).toBe("English Summary");
+  });
+
   it("maps optional news cover images from cms records", async () => {
     const client = {
       collection() {
@@ -46,6 +61,109 @@ describe("mapLocaleRecord", () => {
 
     expect(items[0]?.image?.src).toBe("/api/media/news/rd-update/rd-cover.jpg");
     expect(items[0]?.image?.alt).toContain("技术研发协同推进");
+  });
+
+  it("prefers english cms news fields for english news lists", async () => {
+    const client = {
+      collection() {
+        return {
+          async getFullList() {
+            return [
+              {
+                slug: "english-rd-update",
+                published_at: "2026-04-10",
+                is_published: true,
+                title_zh: "中文新闻",
+                title_ja: "日本語ニュース",
+                title_en: "English R&D Update",
+                summary_zh: "中文摘要",
+                summary_ja: "日本語概要",
+                summary_en: "English summary",
+                content_zh: "中文正文",
+                content_ja: "日本語本文",
+                content_en: "English body",
+              },
+            ];
+          },
+        };
+      },
+    };
+
+    const items = await getNewsList("en", client as never);
+
+    expect(items[0]?.title).toBe("English R&D Update");
+    expect(items[0]?.summary).toBe("English summary");
+    expect(items[0]?.content).toEqual(["English body"]);
+  });
+
+  it("sanitizes malicious html from cms news content", async () => {
+    const client = {
+      collection() {
+        return {
+          async getFullList() {
+            return [
+              {
+                id: "news-record",
+                slug: "sanitized-entry",
+                published_at: "2026-03-29",
+                is_published: true,
+                title_zh: "安全新闻",
+                title_ja: "セキュリティニュース",
+                summary_zh: "摘要",
+                summary_ja: "概要",
+                content_zh:
+                  '<p onclick="alert(1)">Safe</p><script>alert(1)</script><a href="javascript:alert(1)">bad</a>',
+                content_ja:
+                  '<p onclick="alert(1)">Safe</p><script>alert(1)</script><a href="javascript:alert(1)">bad</a>',
+              },
+            ];
+          },
+        };
+      },
+    };
+
+    const items = await getNewsList("zh", client as never);
+    const html = items[0]?.contentHtml ?? "";
+
+    expect(html).toContain("<p>Safe</p>");
+    expect(html).not.toContain("<script");
+    expect(html).not.toContain("onclick=");
+    expect(html).not.toContain("javascript:");
+  });
+
+  it("preserves safe article formatting tags in cms news content", async () => {
+    const client = {
+      collection() {
+        return {
+          async getFullList() {
+            return [
+              {
+                id: "formatted-record",
+                slug: "formatted-entry",
+                published_at: "2026-03-29",
+                is_published: true,
+                title_zh: "格式新闻",
+                title_ja: "書式ニュース",
+                summary_zh: "摘要",
+                summary_ja: "概要",
+                content_zh:
+                  "<h2>Title</h2><p><strong>Lead</strong></p><table><tbody><tr><td>Cell</td></tr></tbody></table>",
+                content_ja:
+                  "<h2>Title</h2><p><strong>Lead</strong></p><table><tbody><tr><td>Cell</td></tr></tbody></table>",
+              },
+            ];
+          },
+        };
+      },
+    };
+
+    const items = await getNewsList("zh", client as never);
+    const html = items[0]?.contentHtml ?? "";
+
+    expect(html).toContain("<h2>Title</h2>");
+    expect(html).toContain("<strong>Lead</strong>");
+    expect(html).toContain("<table>");
+    expect(html).toContain("<td>Cell</td>");
   });
 
   it("maps expanded cms homepage collections into the homepage view model", async () => {
@@ -250,6 +368,106 @@ describe("mapLocaleRecord", () => {
         quote: "合作亮点一",
       },
     ]);
+  });
+
+  it("prefers english cms homepage content for the english locale", async () => {
+    const collections: Record<string, Array<Record<string, unknown>>> = {
+      site_settings: [
+        {
+          company_name_zh: "大连博恒新技术有限公司",
+          company_name_ja: "大連博恒新技術有限公司",
+          company_name_en: "Dalian Boheng New Technology Co., Ltd.",
+          phone: "86-13591839861",
+          email: "710877810@sina.com",
+          address_zh: "中文地址",
+          address_ja: "日本語住所",
+          address_en: "English address",
+        },
+      ],
+      home_sections: [],
+      home_hero: [
+        {
+          eyebrow_zh: "中文眉题",
+          eyebrow_ja: "日本語アイブロー",
+          eyebrow_en: "English eyebrow",
+          title_zh: "中文标题",
+          title_ja: "日本語タイトル",
+          title_en: "English hero title",
+          description_zh: "中文描述",
+          description_ja: "日本語説明",
+          description_en: "English hero description",
+          primary_cta_label_zh: "中文按钮",
+          primary_cta_label_ja: "日本語ボタン",
+          primary_cta_label_en: "English primary CTA",
+          secondary_cta_label_zh: "中文次按钮",
+          secondary_cta_label_ja: "日本語第二ボタン",
+          secondary_cta_label_en: "English secondary CTA",
+          highlights_zh: ["中文亮点"],
+          highlights_ja: ["日本語ハイライト"],
+          highlights_en: ["English highlight"],
+          stats_zh: [{ value: "1", label: "中文" }],
+          stats_ja: [{ value: "1", label: "日本語" }],
+          stats_en: [{ value: "1", label: "English stat" }],
+          is_published: true,
+        },
+      ],
+      home_about: [
+        {
+          eyebrow_zh: "中文简介",
+          eyebrow_ja: "日本語紹介",
+          eyebrow_en: "English about eyebrow",
+          title_zh: "中文企业简介",
+          title_ja: "日本語企業紹介",
+          title_en: "English about title",
+          description_zh: "中文简介正文",
+          description_ja: "日本語紹介本文",
+          description_en: "English about description",
+          points_zh: ["中文要点"],
+          points_ja: ["日本語ポイント"],
+          points_en: ["English point"],
+          badge_value: "DALIAN",
+          badge_label_zh: "中文徽标",
+          badge_label_ja: "日本語バッジ",
+          badge_label_en: "English badge",
+          stats_zh: [{ value: "1", label: "中文统计" }],
+          stats_ja: [{ value: "1", label: "日本語統計" }],
+          stats_en: [{ value: "1", label: "English about stat" }],
+          is_published: true,
+        },
+      ],
+      capabilities: [],
+      advantages: [],
+      product_cases: [],
+      cooperation_highlights: [],
+      news: [],
+    };
+
+    const client = {
+      collection(name: string) {
+        return {
+          async getFullList() {
+            return collections[name] ?? [];
+          },
+        };
+      },
+    };
+
+    const result = await getHomePageContent("en", client as never);
+
+    expect(result.siteSettings.companyName).toBe("Dalian Boheng New Technology Co., Ltd.");
+    expect(result.siteSettings.address).toBe("English address");
+    expect(result.hero.eyebrow).toBe("English eyebrow");
+    expect(result.hero.title).toBe("English hero title");
+    expect(result.hero.description).toBe("English hero description");
+    expect(result.hero.primaryCta).toBe("English primary CTA");
+    expect(result.hero.secondaryCta).toBe("English secondary CTA");
+    expect(result.hero.highlights).toEqual(["English highlight"]);
+    expect(result.hero.stats).toEqual([{ value: "1", label: "English stat" }]);
+    expect(result.about.title).toBe("English about title");
+    expect(result.about.description).toBe("English about description");
+    expect(result.about.points).toEqual(["English point"]);
+    expect(result.about.badge).toEqual({ value: "DALIAN", label: "English badge" });
+    expect(result.about.stats).toEqual([{ value: "1", label: "English about stat" }]);
   });
 
   it("keeps homepage fallback content when new cms collections are unavailable", async () => {

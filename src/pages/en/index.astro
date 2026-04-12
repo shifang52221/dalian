@@ -1,0 +1,35 @@
+---
+import About from "../../components/home/About.astro";
+import Advantages from "../../components/home/Advantages.astro";
+import Capabilities from "../../components/home/Capabilities.astro";
+import ContactSection from "../../components/home/ContactSection.astro";
+import Hero from "../../components/home/Hero.astro";
+import NewsPreview from "../../components/home/NewsPreview.astro";
+import Projects from "../../components/home/Projects.astro";
+import Testimonials from "../../components/home/Testimonials.astro";
+import { getImageManifest } from "../../content/image-manifest";
+import { getSiteCopy } from "../../content/site-copy";
+import { getHomePageContent } from "../../lib/content-api";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+
+const content = await getHomePageContent("en");
+const copy = getSiteCopy("en");
+const images = getImageManifest();
+---
+
+<BaseLayout
+  locale="en"
+  lang="en"
+  title="Dalian Boheng New Technology Co., Ltd."
+  description="Official corporate website of Dalian Boheng New Technology Co., Ltd. with English, Chinese, and Japanese content."
+  siteSettings={content.siteSettings}
+>
+  <Hero content={content.hero} image={content.hero.image ?? images.heroSpotlight} />
+  <About content={content.about} image={content.about.image ?? images.about} />
+  <Capabilities content={content.capabilities} />
+  <Advantages content={content.advantages} />
+  <Projects content={content.projects} images={images.gallery} />
+  <Testimonials content={content.testimonials} />
+  <NewsPreview locale="en" actionLabel={copy.newsPreviewAction} content={content.news} />
+  <ContactSection locale="en" content={content.contact} />
+</BaseLayout>

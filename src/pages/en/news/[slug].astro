@@ -1,0 +1,45 @@
+---
+import NewsDetail from "../../../components/news/NewsDetail.astro";
+import { getNewsList } from "../../../lib/content-api";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+
+const slug = Astro.params.slug ?? "";
+const allItems = await getNewsList("en");
+const item = allItems.find((entry) => entry.slug === slug);
+
+const relatedItems = allItems.filter((entry) => entry.slug !== slug).slice(0, 3);
+const title = item
+  ? `${item.title} | Dalian Boheng New Technology Co., Ltd.`
+  : "News Not Found | Dalian Boheng New Technology Co., Ltd.";
+const description = item?.summary ?? "The requested news article could not be found.";
+
+if (!item) {
+  Astro.response.status = 404;
+}
+---
+
+<BaseLayout
+  locale="en"
+  lang="en"
+  title={title}
+  description={description}
+>
+  {
+    item ? (
+      <NewsDetail item={item} locale="en" relatedItems={relatedItems} />
+    ) : (
+      <section class="section section--light">
+        <div class="section__inner">
+          <div class="section__heading section__heading--center" data-reveal>
+            <p class="eyebrow">News</p>
+            <h1 class="section__title">This article could not be found</h1>
+            <p class="section__subtitle">
+              The article linked here does not exist or has not been published yet. Please return to the news page to browse other updates.
+            </p>
+            <a class="button button--primary" href="/en/news">Back to News</a>
+          </div>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

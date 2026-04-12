@@ -418,6 +418,207 @@ const homeContent: Record<Locale, HomeContent> = {
       },
     },
   },
+  en: {
+    hero: {
+      eyebrow: "Roller equipment and surface engineering for steel production",
+      title: "Manufacturing and Surface Engineering Solutions for Continuous Casting and Rolling Applications",
+      titleLines: [
+        "Manufacturing for continuous casting and rolling applications",
+        "and surface engineering solutions",
+      ],
+      description:
+        "Dalian Boheng New Technology Co., Ltd. specializes in complete roller conveyor equipment and spare parts for continuous casting, continuous rolling, and cold rolling, supported by core capabilities such as weld overlay, thermal spraying, and plasma cladding.",
+      primaryCta: "Contact Us",
+      secondaryCta: "View Project Cases",
+      highlights: [
+        "Continuous Casting Equipment",
+        "Continuous Rolling Equipment",
+        "Cold Rolling Equipment",
+        "Surface Engineering",
+      ],
+      stats: [
+        { value: "15-ton", label: "Submerged-Arc Cladding System" },
+        { value: "3-ton", label: "Open-Arc Cladding System" },
+        { value: "3-ton", label: "Submerged-Arc Cladding System" },
+      ],
+    },
+    about: {
+      eyebrow: "Company Profile",
+      title: "Serving global steel customers through quality, discipline, and credibility",
+      description:
+        "Based in Dalian, the company has long provided roller equipment, spare parts, and surface engineering services for the steel industry while continuously developing new processes together with Dalian University of Technology.",
+      points: [
+        "Focused on complete roller equipment and spare parts for continuous casting, continuous rolling, and cold rolling lines",
+        "Equipped with core surface engineering technologies including weld overlay, thermal spraying, and plasma cladding",
+        "Able to manufacture to drawings and also design suitable coatings based on real operating conditions",
+        "Committed to improving service life for critical wear parts while reducing manufacturing cost",
+      ],
+      badge: { value: "15T", label: "Maximum submerged-arc cladding load" },
+      stats: [
+        { value: "4000-5000", label: "Annual weld-overlay capacity" },
+        { value: "800-1000", label: "Annual spraying capacity" },
+      ],
+    },
+    capabilities: {
+      eyebrow: "Core Capabilities",
+      title: "Integrated process capabilities from fabrication and heat treatment to assembly and inspection",
+      items: [
+        {
+          title: "Submerged-Arc Cladding",
+          description:
+            "Suitable for new production and repair of key roller components, with high load capacity and stable process control.",
+        },
+        {
+          title: "Open-Arc Cladding",
+          description:
+            "Well suited to wide-side and narrow-side foot rollers and other parts requiring different hardness ranges.",
+        },
+        {
+          title: "Plasma Cladding",
+          description:
+            "Used for high-adhesion and high-wear applications where service life improvement of special wear parts is critical.",
+        },
+        {
+          title: "Flame Spraying",
+          description:
+            "Applied to wear-resistant layer formation and surface repair to extend the operating cycle of components.",
+        },
+        {
+          title: "Heat Treatment and Assembly",
+          description:
+            "Supported by heat treatment, shot blasting, and assembly capabilities to ensure consistent final delivery.",
+        },
+        {
+          title: "Quality Inspection",
+          description:
+            "Covers hardness testing after quenching and tempering, PT inspection of cladding, and other quality-control procedures.",
+        },
+      ],
+    },
+    advantages: {
+      eyebrow: "Why Choose Us",
+      title: "Process, R&D, and delivery capabilities built around steel-equipment applications",
+      items: [
+        {
+          title: "Process Experience",
+          description:
+            "Extensive experience in materials and process applications across continuous casting, continuous rolling, and cold rolling conditions.",
+        },
+        {
+          title: "Joint Development",
+          description:
+            "Long-term cooperation with Dalian University of Technology on engineering applications of new technologies.",
+        },
+        {
+          title: "Stable Quality",
+          description:
+            "Relatively complete workflows for manufacturing, heat treatment, assembly, and inspection ensure reliable delivery quality.",
+        },
+        {
+          title: "Support for Global Clients",
+          description:
+            "Serving steel mills and equipment makers at home and abroad, with support for new production, repair, and condition improvement.",
+        },
+      ],
+    },
+    projects: {
+      eyebrow: "Project Cases",
+      title: "Typical applications across continuous casting, rolling lines, and other specialty products",
+      categories: [
+        {
+          title: "Continuous Casting Equipment",
+          description:
+            "Products such as straightening rolls, caster rolls, foot rolls, and sleeves cover a wide range of operating scenarios.",
+          tags: ["Cr13 series", "Cr14 series", "New build and repair"],
+        },
+        {
+          title: "Continuous Rolling Equipment",
+          description:
+            "Pinch rolls, wrapper rolls, guide rolls, and laminar rolls serve multiple rolling lines and process stages.",
+          tags: ["Cr8-Mo-W-Co", "Ni-Cr-B-Si", "Stellite alloy"],
+        },
+        {
+          title: "Other Products",
+          description:
+            "Including hoppers, flanges, shaft sleeves, valves, rotor repair, cylinder repair, and other customized jobs.",
+          tags: ["Wear-resistant layers", "Repair", "Special conditions"],
+        },
+      ],
+    },
+    testimonials: {
+      eyebrow: "Cooperation Feedback",
+      title: "Placeholder area for customer and application feedback",
+      items: [
+        {
+          name: "Customer feedback placeholder",
+          role: "Continuous casting equipment support",
+          quote:
+            "This space can later be replaced with real project summaries, application feedback, or customer evaluation excerpts.",
+        },
+        {
+          name: "Project summary placeholder",
+          role: "Rolling process support",
+          quote:
+            "For now, the section preserves the target layout and motion system, ready for future client cases and project notes.",
+        },
+        {
+          name: "Application placeholder",
+          role: "Special-condition repair",
+          quote:
+            "The recommendation is to replace this with B2B-oriented project language rather than consumer-style endorsement copy.",
+        },
+      ],
+    },
+    news: {
+      eyebrow: "News Center",
+      title: "Company news and latest updates",
+      items: [
+        {
+          slug: "surface-engineering-upgrade",
+          title: "Official website upgraded to support Chinese and Japanese presentation",
+          summary:
+            "The new website reorganizes company capabilities, project cases, news, and the inquiry system into a unified structure.",
+          meta: "2026-03-16",
+        },
+        {
+          slug: "process-capability-overview",
+          title: "Corporate presentation refined around surface engineering capabilities",
+          summary:
+            "The updated pages systematically present weld overlay, thermal spraying, plasma cladding, heat treatment, and quality control.",
+          meta: "2026-03-10",
+        },
+        {
+          slug: "news-cms-planning",
+          title: "News publishing and inquiry management module enters planning stage",
+          summary:
+            "The backend is planned to support news publishing, page copy maintenance, and bilingual inquiry management.",
+          meta: "2026-03-05",
+        },
+      ],
+    },
+    contact: {
+      eyebrow: "Contact Us",
+      title: "Get in touch with Boheng for equipment and process support",
+      description:
+        "If you would like to discuss roller products, surface engineering processes, or cooperation opportunities, please contact us through the channels below.",
+      details: [
+        {
+          label: "Address",
+          value: "Hanjia Village, Sanjianpu Subdistrict, Lushunkou District, Dalian, Liaoning, China",
+        },
+        { label: "Mobile", value: "86-13591839861" },
+        { label: "Email", value: "710877810@sina.com" },
+      ],
+      formLabels: {
+        name: "Name",
+        company: "Company",
+        email: "Email",
+        phone: "Phone",
+        message: "Requirements",
+        submit: "Submit Inquiry",
+      },
+    },
+  },
 };
 
 const polishedTestimonials: Record<
@@ -472,6 +673,30 @@ const polishedTestimonials: Record<
       },
     ],
   },
+  en: {
+    eyebrow: "Cooperation and Delivery",
+    title: "Coordinated execution and delivery assurance for industrial clients",
+    items: [
+      {
+        name: "Material and process matching",
+        role: "Selection based on real operating conditions",
+        quote:
+          "For continuous casting, rolling, and cold-rolling conditions, we match materials, surface processes, and heat-treatment routes with attention to service life, cost, and delivery rhythm.",
+      },
+      {
+        name: "Manufacturing and quality control",
+        role: "Stable delivery of key components",
+        quote:
+          "Production is organized around weld overlay, spraying, heat treatment, quenching and tempering, and inspection to maintain stable quality in both new manufacturing and repair work.",
+      },
+      {
+        name: "Pre-sales and after-sales coordination",
+        role: "More suitable for B2B project execution",
+        quote:
+          "For new production, repair, or operating-condition improvement projects, we can coordinate with shutdown schedules, field conditions, and follow-up usage plans through sustained communication.",
+      },
+    ],
+  },
 };
 
 const enterpriseAboutOverrides: Record<Locale, HomeContent["about"]> = {
@@ -505,6 +730,22 @@ const enterpriseAboutOverrides: Record<Locale, HomeContent["about"]> = {
     stats: [
       { value: "4000-5000", label: "年間肉盛能力" },
       { value: "800-1000", label: "年間溶射能力" },
+    ],
+  },
+  en: {
+    eyebrow: "Company Profile",
+    title: "A specialized manufacturing plant in Dalian for steel equipment and surface engineering",
+    description:
+      "Dalian Boheng New Technology Co., Ltd. is located in Dalian, the major coastal city at the southern tip of the Liaodong Peninsula. Facing the Northeast China hinterland and the Shandong Peninsula across the sea, Dalian is an important eastern coastal port city integrating economy, trade, industry, and tourism.\n\nOur company is a specialized manufacturer of complete roller conveyor equipment and spare parts for continuous casting, continuous rolling, and cold rolling in the steel industry. We possess core surface engineering technologies such as weld overlay, thermal spraying, and plasma cladding, as well as extensive experience in material and process application under different operating conditions. Through long-term cooperation with Dalian University of Technology, we continue to develop and apply new technologies. We can manufacture according to drawings and also design suitable coatings based on on-site service conditions to improve the life of critical parts.\n\nWe maintain relatively complete production capabilities for weld overlay, spraying, heat treatment, shot blasting, and assembly, together with stable supporting partners for heat treatment, fabrication, and machining. Reliable quality has earned recognition from customers at home and abroad.",
+    points: [
+      "Survival through quality, excellence through strict standards, and trust through sincerity are the principles of our company.",
+      "High efficiency and low cost, while delivering high-quality products and services, remain our operating objective.",
+      "Customer improvement requirements are the direction of our technology development and innovation.",
+    ],
+    badge: { value: "DALIAN", label: "Coastal manufacturing base" },
+    stats: [
+      { value: "4000-5000", label: "Annual weld-overlay capacity" },
+      { value: "800-1000", label: "Annual spraying capacity" },
     ],
   },
 };

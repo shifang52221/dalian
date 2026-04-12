@@ -78,6 +78,41 @@ const newsContent: Record<Locale, NewsItem[]> = {
       ],
     },
   ],
+  en: [
+    {
+      slug: "surface-engineering-upgrade",
+      date: "2026-03-16",
+      title: "Official website architecture upgraded for bilingual corporate presentation",
+      summary:
+        "The new official website is being upgraded in a unified way around company capabilities, project cases, news, and the inquiry system.",
+      content: [
+        "The new website adopts localized routing and a unified content-field structure so that it can be maintained through the CMS in future iterations.",
+        "The frontend focuses on roller equipment for the steel industry, surface engineering capabilities, project cases, and corporate news.",
+      ],
+    },
+    {
+      slug: "process-capability-overview",
+      date: "2026-03-10",
+      title: "Corporate presentation refined around surface engineering capabilities",
+      summary:
+        "The new pages systematically present weld overlay, thermal spraying, plasma cladding, heat treatment, and quality-control capabilities.",
+      content: [
+        "The website presentation is organized around Boheng's existing manufacturing capacity, highlighting process support for continuous casting, rolling, and related applications.",
+        "After full CMS integration, the structure can be further expanded with typical products, application cases, and customer-distribution sections.",
+      ],
+    },
+    {
+      slug: "news-cms-planning",
+      date: "2026-03-05",
+      title: "News publishing and inquiry management module enters planning stage",
+      summary:
+        "The backend will support news publishing, page-copy maintenance, and multilingual inquiry tracking and handling.",
+      content: [
+        "The planned backend centers on a lightweight CMS and will support maintenance of news lists, article details, and synchronized frontend content updates.",
+        "Inquiry data will also flow into the backend in a unified way so teams can follow up by source language and manage communication more efficiently.",
+      ],
+    },
+  ],
 };
 
 export function getFallbackNews(locale: Locale) {

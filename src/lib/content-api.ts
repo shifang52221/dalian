@@ -14,9 +14,8 @@ import {
   type HomeContent,
 } from "../content/fallback/site-content";
 import { getSiteCopy } from "../content/site-copy";
+import type { Locale } from "./i18n";
 import { pb } from "./pocketbase";
-
-type Locale = "zh" | "ja";
 
 type LocaleFieldRecord = Record<string, unknown>;
 
@@ -124,6 +123,82 @@ function decodeHtmlEntities(value: string) {
   return result;
 }
 
+const removableNewsTagBlocks = [
+  "script",
+  "style",
+  "iframe",
+  "object",
+  "embed",
+  "form",
+  "input",
+  "button",
+  "textarea",
+  "select",
+  "option",
+  "link",
+  "meta",
+  "base",
+  "svg",
+  "math",
+  "applet",
+] as const;
+
+const allowedNewsHtmlTags = new Set([
+  "p",
+  "br",
+  "strong",
+  "em",
+  "b",
+  "i",
+  "ul",
+  "ol",
+  "li",
+  "table",
+  "thead",
+  "tbody",
+  "tr",
+  "td",
+  "th",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+]);
+
+function sanitizeNewsHtml(value: string) {
+  let sanitized = value.replace(/<!--[\s\S]*?-->/gu, "");
+
+  for (const tagName of removableNewsTagBlocks) {
+    const blockPattern = new RegExp(
+      `<${tagName}\\b[^>]*>[\\s\\S]*?<\\/${tagName}>`,
+      "giu",
+    );
+    const selfClosingPattern = new RegExp(`<${tagName}\\b[^>]*\\/?>`, "giu");
+
+    sanitized = sanitized.replace(blockPattern, "");
+    sanitized = sanitized.replace(selfClosingPattern, "");
+  }
+
+  return sanitized.replace(/<\/?([a-z0-9]+)\b[^>]*>/giu, (fullMatch, rawTagName: string) => {
+    const tagName = rawTagName.toLowerCase();
+    if (!allowedNewsHtmlTags.has(tagName)) {
+      return "";
+    }
+
+    if (fullMatch.startsWith("</")) {
+      return `</${tagName}>`;
+    }
+
+    if (tagName === "br") {
+      return "<br>";
+    }
+
+    return `<${tagName}>`;
+  });
+}
+
 function normalizeRichHtmlContent(value: string) {
   const decoded = decodeHtmlEntities(value).trim();
   const singleListMatch = decoded.match(
@@ -131,19 +206,19 @@ function normalizeRichHtmlContent(value: string) {
   );
 
   if (!singleListMatch) {
-    return decoded;
+    return sanitizeNewsHtml(decoded);
   }
 
   const innerHtml = singleListMatch[2]?.trim() ?? "";
   if (!innerHtml) {
-    return decoded;
+    return sanitizeNewsHtml(decoded);
   }
 
   if (/<\/?(ul|ol|li|table|thead|tbody|tr|td|th)\b/i.test(innerHtml)) {
-    return decoded;
+    return sanitizeNewsHtml(decoded);
   }
 
-  return `<p>${innerHtml}</p>`;
+  return sanitizeNewsHtml(`<p>${innerHtml}</p>`);
 }
 
 function normalizeSummaryText(value: unknown) {
@@ -350,11 +425,23 @@ function buildSiteSettings(
   };
 }
 
+function getLocaleSuffix(locale: Locale) {
+  return `_${locale}` as const;
+}
+
+function getLocalizedValue<T = unknown>(
+  record: Record<string, unknown>,
+  baseKey: string,
+  locale: Locale,
+) {
+  return record[`${baseKey}${getLocaleSuffix(locale)}`] as T | undefined;
+}
+
 export function mapLocaleRecord<T extends LocaleFieldRecord>(
   record: T,
   locale: Locale,
 ) {
-  const suffix = locale === "ja" ? "_ja" : "_zh";
+  const suffix = getLocaleSuffix(locale);
   const mapped: Record<string, unknown> = {};
 
   for (const [key, value] of Object.entries(record)) {
@@ -452,8 +539,8 @@ export async function getHomePageContent(
         | undefined;
       if (heroRecord) {
         const localizedHero = mapLocaleRecord(heroRecord, locale) as Record<string, unknown>;
-        const highlights = parseStringArray(locale === "ja" ? heroRecord.highlights_ja : heroRecord.highlights_zh);
-        const stats = parseStatArray(locale === "ja" ? heroRecord.stats_ja : heroRecord.stats_zh);
+        const highlights = parseStringArray(getLocalizedValue(heroRecord, "highlights", locale));
+        const stats = parseStatArray(getLocalizedValue(heroRecord, "stats", locale));
 
         if (localizedHero.eyebrow) {
           result.hero.eyebrow = String(localizedHero.eyebrow);
@@ -464,14 +551,20 @@ export async function getHomePageContent(
         if (localizedHero.description) {
           result.hero.description = String(localizedHero.description);
         }
-        if (locale === "ja" ? heroRecord.primary_cta_label_ja : heroRecord.primary_cta_label_zh) {
+        const primaryCtaLabel = getLocalizedValue(heroRecord, "primary_cta_label", locale);
+        if (primaryCtaLabel) {
           result.hero.primaryCta = String(
-            locale === "ja" ? heroRecord.primary_cta_label_ja : heroRecord.primary_cta_label_zh,
+            primaryCtaLabel,
           );
         }
-        if (locale === "ja" ? heroRecord.secondary_cta_label_ja : heroRecord.secondary_cta_label_zh) {
+        const secondaryCtaLabel = getLocalizedValue(
+          heroRecord,
+          "secondary_cta_label",
+          locale,
+        );
+        if (secondaryCtaLabel) {
           result.hero.secondaryCta = String(
-            locale === "ja" ? heroRecord.secondary_cta_label_ja : heroRecord.secondary_cta_label_zh,
+            secondaryCtaLabel,
           );
         }
         if (highlights) {
@@ -506,8 +599,8 @@ export async function getHomePageContent(
         | undefined;
       if (aboutRecord) {
         const localizedAbout = mapLocaleRecord(aboutRecord, locale) as Record<string, unknown>;
-        const points = parseStringArray(locale === "ja" ? aboutRecord.points_ja : aboutRecord.points_zh);
-        const stats = parseStatArray(locale === "ja" ? aboutRecord.stats_ja : aboutRecord.stats_zh);
+        const points = parseStringArray(getLocalizedValue(aboutRecord, "points", locale));
+        const stats = parseStatArray(getLocalizedValue(aboutRecord, "stats", locale));
 
         if (localizedAbout.eyebrow) {
           result.about.eyebrow = String(localizedAbout.eyebrow);
@@ -578,7 +671,7 @@ export async function getHomePageContent(
       if (productCases.length > 0) {
         result.projects.categories = sortBySortOrder(productCases.filter(isPublished)).map((item) => {
           const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
-          const tags = locale === "ja" ? item.tags_ja : item.tags_zh;
+          const tags = getLocalizedValue(item, "tags", locale);
           const projectImage = buildMediaAsset(
             "product_cases",
             item.id,

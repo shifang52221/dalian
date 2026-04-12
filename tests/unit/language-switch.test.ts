@@ -8,6 +8,15 @@ describe("getLocaleUrl", () => {
     expect(getLocaleUrl("/", "ja")).toBe("/ja/");
   });
 
+  it("maps the Chinese home page to the English home page", () => {
+    expect(getLocaleUrl("/", "en")).toBe("/en/");
+  });
+
+  it("maps localized English and Japanese paths back to Chinese routes", () => {
+    expect(getLocaleUrl("/en/news/demo", "zh")).toBe("/news/demo");
+    expect(getLocaleUrl("/ja/news/demo", "zh")).toBe("/news/demo");
+  });
+
   it("renders a valid Japanese language switch anchor", () => {
     const component = readFileSync(
       resolve("f:/www/www13dalian/src/components/site/LanguageSwitch.astro"),
@@ -17,6 +26,16 @@ describe("getLocaleUrl", () => {
     expect(component).toContain('href={jaUrl}>');
     expect(component).toContain("</a>");
     expect(component).toContain("日本語");
+  });
+
+  it("renders a valid English language switch anchor", () => {
+    const component = readFileSync(
+      resolve("f:/www/www13dalian/src/components/site/LanguageSwitch.astro"),
+      "utf8",
+    );
+
+    expect(component).toContain('href={enUrl}>');
+    expect(component).toContain("EN");
   });
 
   it("keeps the language switch above surrounding layout and prevents it from shrinking away", () => {

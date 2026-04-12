@@ -4,9 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
+import type { Locale } from "../../lib/i18n";
 
 interface Props {
-  locale?: "zh" | "ja";
+  locale?: Locale;
   content: {
     eyebrow: string;
     title: string;
@@ -24,8 +25,10 @@ interface Props {
 }
 
 const { content, locale = "zh" } = Astro.props;
-const formHeading = locale === "ja" ? "Consultation request" : "Project inquiry";
-const infoHeading = locale === "ja" ? "Contact details" : "Contact details";
+const formHeading =
+  locale === "ja" ? "Consultation request" : locale === "en" ? "Project Inquiry" : "项目咨询";
+const infoHeading =
+  locale === "ja" ? "Contact details" : locale === "en" ? "Contact Details" : "联系信息";
 const addressDetail =
   content.details.find((detail) => /地址|住所|address/i.test(detail.label))?.value ?? content.details[0]?.value ?? "";
 const encodedAddress = encodeURIComponent(addressDetail);
@@ -36,15 +39,26 @@ const baiduMapAk = "WPikkqUAOD9fSQMXnXNkQ2o1R6xdH4O6";
 const baiduFallbackLat = 38.913141;
 const baiduFallbackLng = 121.238621;
 const companyName =
-  locale === "ja" ? "\u5927\u9023\u535a\u6052\u65b0\u6280\u8853\u6709\u9650\u516c\u53f8" : "\u5927\u8fde\u535a\u6052\u65b0\u6280\u672f\u6709\u9650\u516c\u53f8";
+  locale === "ja"
+    ? "\u5927\u9023\u535a\u6052\u65b0\u6280\u8853\u6709\u9650\u516c\u53f8"
+    : locale === "en"
+      ? "Dalian Boheng New Technology Co., Ltd."
+      : "\u5927\u8fde\u535a\u6052\u65b0\u6280\u672f\u6709\u9650\u516c\u53f8";
 const localMapImageUrl =
   `https://api.map.baidu.com/staticimage/v2?ak=${baiduMapAk}&center=${baiduFallbackLng},${baiduFallbackLat}&width=960&height=420&zoom=15&markers=${baiduFallbackLng},${baiduFallbackLat}&markerStyles=l,0x2c6ea3,0xffffff`;
 const amapUrl = amapSearchUrl;
 const baiduMapUrl = `https://map.baidu.com/search/${encodedAddress}`;
-const mapPinLabel = locale === "ja" ? "Factory location" : "\u5de5\u5382\u4f4d\u7f6e\u793a\u610f";
+const mapPinLabel =
+  locale === "ja"
+    ? "Factory location"
+    : locale === "en"
+      ? "Approximate factory location"
+      : "\u5de5\u5382\u4f4d\u7f6e\u793a\u610f";
 const mapNote =
   locale === "ja"
     ? "The map shows the approximate plant area. Use the buttons above to open the full map."
+    : locale === "en"
+      ? "The map shows the approximate plant area. Use the buttons above to open the full map."
     : "\u5730\u56fe\u663e\u793a\u4e3a\u5382\u533a\u5927\u81f4\u4f4d\u7f6e\uff0c\u53ef\u4ece\u53f3\u4e0a\u89d2\u6253\u5f00\u5b8c\u6574\u5730\u56fe\u3002";
 ---
 
@@ -58,11 +72,13 @@ const mapNote =
     <div class="contact-grid">
       <Card className="contact-form-card" data-reveal>
         <CardHeader>
-          <p class="site-footer__kicker">{locale === "ja" ? "INQUIRY DESK" : "INQUIRY DESK"}</p>
+          <p class="site-footer__kicker">INQUIRY DESK</p>
           <CardTitle>{formHeading}</CardTitle>
           <CardDescription>
             {locale === "ja"
               ? "Share your equipment, process, or repair requirements and our team will follow up."
+              : locale === "en"
+                ? "Share your equipment, process, or repair requirements and our team will follow up."
               : "Share your equipment, process, or repair requirements and our team will follow up."}
           </CardDescription>
         </CardHeader>
@@ -113,11 +129,13 @@ const mapNote =
 
       <Card className="contact-info-card" data-reveal data-delay="100">
         <CardHeader>
-          <p class="site-footer__kicker">{locale === "ja" ? "DIRECT CHANNELS" : "DIRECT CHANNELS"}</p>
+          <p class="site-footer__kicker">DIRECT CHANNELS</p>
           <CardTitle>{infoHeading}</CardTitle>
           <CardDescription>
             {locale === "ja"
               ? "Reach Boheng through the channels below for technical consultation and commercial coordination."
+              : locale === "en"
+                ? "Reach Boheng through the channels below for technical consultation and commercial coordination."
               : "Reach Boheng through the channels below for technical consultation and commercial coordination."}
           </CardDescription>
         </CardHeader>
@@ -145,8 +163,12 @@ const mapNote =
           <span>{addressDetail}</span>
         </div>
         <div class="map-shell__actions">
-          <a href={amapUrl} target="_blank" rel="noreferrer">在高德打开</a>
-          <a href={baiduMapUrl} target="_blank" rel="noreferrer">在百度打开</a>
+          <a href={amapUrl} target="_blank" rel="noreferrer">
+            {locale === "en" ? "Open in Amap" : "在高德打开"}
+          </a>
+          <a href={baiduMapUrl} target="_blank" rel="noreferrer">
+            {locale === "en" ? "Open in Baidu" : "在百度打开"}
+          </a>
         </div>
       </div>
       <div class="map-embed" aria-label={locale === "ja" ? "Company location map" : "Company location map"}>

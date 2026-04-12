@@ -14,7 +14,8 @@ const { locale, currentPath, siteSettings } = Astro.props;
 const copy = getSiteCopy(locale);
 const navLabel = "Main navigation";
 const brandStatement = "Surface Engineering and Equipment Systems";
-const isHomePage = currentPath === "/" || currentPath === "/ja/";
+const homePath = locale === "zh" ? "/" : `/${locale}/`;
+const isHomePage = currentPath === "/" || currentPath === "/ja/" || currentPath === "/en/";
 ---
 
 <header class:list={["site-header", isHomePage && "site-header--home"]}>
@@ -22,7 +23,7 @@ const isHomePage = currentPath === "/" || currentPath === "/ja/";
     <div class="navbar__surface">
       <span class="navbar__surface-bar" aria-hidden="true"></span>
       <div class="navbar__inner">
-        <a class="navbar-brand" href={locale === "ja" ? "/ja/" : "/"}>
+        <a class="navbar-brand" href={homePath}>
           <span class="navbar-brand__logo-shell">
             <img
               class="navbar-brand__logo"

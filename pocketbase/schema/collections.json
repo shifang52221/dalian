@@ -9,12 +9,15 @@
     "fields": [
       { "name": "company_name_zh", "type": "text" },
       { "name": "company_name_ja", "type": "text" },
+      { "name": "company_name_en", "type": "text" },
       { "name": "phone", "type": "text" },
       { "name": "email", "type": "email" },
       { "name": "address_zh", "type": "text" },
       { "name": "address_ja", "type": "text" },
+      { "name": "address_en", "type": "text" },
       { "name": "copyright_zh", "type": "text" },
       { "name": "copyright_ja", "type": "text" },
+      { "name": "copyright_en", "type": "text" },
       { "name": "icp", "type": "text" },
       { "name": "map_url", "type": "text" }
     ]
@@ -30,8 +33,10 @@
       { "name": "key", "type": "text" },
       { "name": "title_zh", "type": "text" },
       { "name": "title_ja", "type": "text" },
+      { "name": "title_en", "type": "text" },
       { "name": "summary_zh", "type": "editor" },
       { "name": "summary_ja", "type": "editor" },
+      { "name": "summary_en", "type": "editor" },
       { "name": "is_published", "type": "bool" }
     ]
   },
@@ -45,20 +50,27 @@
     "fields": [
       { "name": "eyebrow_zh", "type": "text" },
       { "name": "eyebrow_ja", "type": "text" },
+      { "name": "eyebrow_en", "type": "text" },
       { "name": "title_zh", "type": "text" },
       { "name": "title_ja", "type": "text" },
+      { "name": "title_en", "type": "text" },
       { "name": "description_zh", "type": "editor" },
       { "name": "description_ja", "type": "editor" },
+      { "name": "description_en", "type": "editor" },
       { "name": "primary_cta_label_zh", "type": "text" },
       { "name": "primary_cta_label_ja", "type": "text" },
+      { "name": "primary_cta_label_en", "type": "text" },
       { "name": "primary_cta_href", "type": "text" },
       { "name": "secondary_cta_label_zh", "type": "text" },
       { "name": "secondary_cta_label_ja", "type": "text" },
+      { "name": "secondary_cta_label_en", "type": "text" },
       { "name": "secondary_cta_href", "type": "text" },
       { "name": "highlights_zh", "type": "json" },
       { "name": "highlights_ja", "type": "json" },
+      { "name": "highlights_en", "type": "json" },
       { "name": "stats_zh", "type": "json" },
       { "name": "stats_ja", "type": "json" },
+      { "name": "stats_en", "type": "json" },
       { "name": "hero_image", "type": "file", "maxSelect": 1 },
       { "name": "is_published", "type": "bool" }
     ]
@@ -73,20 +85,27 @@
     "fields": [
       { "name": "eyebrow_zh", "type": "text" },
       { "name": "eyebrow_ja", "type": "text" },
+      { "name": "eyebrow_en", "type": "text" },
       { "name": "title_zh", "type": "text" },
       { "name": "title_ja", "type": "text" },
+      { "name": "title_en", "type": "text" },
       { "name": "description_zh", "type": "editor" },
       { "name": "description_ja", "type": "editor" },
+      { "name": "description_en", "type": "editor" },
       { "name": "points_zh", "type": "json" },
       { "name": "points_ja", "type": "json" },
+      { "name": "points_en", "type": "json" },
       { "name": "badge_value", "type": "text" },
       { "name": "badge_label_zh", "type": "text" },
       { "name": "badge_label_ja", "type": "text" },
+      { "name": "badge_label_en", "type": "text" },
       { "name": "stats_zh", "type": "json" },
       { "name": "stats_ja", "type": "json" },
+      { "name": "stats_en", "type": "json" },
       { "name": "image", "type": "file", "maxSelect": 1 },
       { "name": "image_alt_zh", "type": "text" },
       { "name": "image_alt_ja", "type": "text" },
+      { "name": "image_alt_en", "type": "text" },
       { "name": "is_published", "type": "bool" }
     ]
   },
@@ -100,8 +119,10 @@
     "fields": [
       { "name": "title_zh", "type": "text" },
       { "name": "title_ja", "type": "text" },
+      { "name": "title_en", "type": "text" },
       { "name": "description_zh", "type": "editor" },
       { "name": "description_ja", "type": "editor" },
+      { "name": "description_en", "type": "editor" },
       { "name": "sort_order", "type": "number" },
       { "name": "is_published", "type": "bool" }
     ]
@@ -116,8 +137,10 @@
     "fields": [
       { "name": "title_zh", "type": "text" },
       { "name": "title_ja", "type": "text" },
+      { "name": "title_en", "type": "text" },
       { "name": "description_zh", "type": "editor" },
       { "name": "description_ja", "type": "editor" },
+      { "name": "description_en", "type": "editor" },
       { "name": "icon_key", "type": "text" },
       { "name": "preview_group", "type": "text" },
       { "name": "preview_image", "type": "file", "maxSelect": 1 },
@@ -135,10 +158,13 @@
     "fields": [
       { "name": "category_zh", "type": "text" },
       { "name": "category_ja", "type": "text" },
+      { "name": "category_en", "type": "text" },
       { "name": "description_zh", "type": "editor" },
       { "name": "description_ja", "type": "editor" },
+      { "name": "description_en", "type": "editor" },
       { "name": "tags_zh", "type": "json" },
       { "name": "tags_ja", "type": "json" },
+      { "name": "tags_en", "type": "json" },
       { "name": "image", "type": "file", "maxSelect": 1 },
       { "name": "sort_order", "type": "number" },
       { "name": "is_published", "type": "bool" }
@@ -154,10 +180,13 @@
     "fields": [
       { "name": "name_zh", "type": "text" },
       { "name": "name_ja", "type": "text" },
+      { "name": "name_en", "type": "text" },
       { "name": "role_zh", "type": "text" },
       { "name": "role_ja", "type": "text" },
+      { "name": "role_en", "type": "text" },
       { "name": "quote_zh", "type": "editor" },
       { "name": "quote_ja", "type": "editor" },
+      { "name": "quote_en", "type": "editor" },
       { "name": "sort_order", "type": "number" },
       { "name": "is_published", "type": "bool" }
     ]
@@ -173,10 +202,13 @@
       { "name": "slug", "type": "text" },
       { "name": "title_zh", "type": "text" },
       { "name": "title_ja", "type": "text" },
+      { "name": "title_en", "type": "text" },
       { "name": "summary_zh", "type": "editor" },
       { "name": "summary_ja", "type": "editor" },
+      { "name": "summary_en", "type": "editor" },
       { "name": "content_zh", "type": "editor" },
       { "name": "content_ja", "type": "editor" },
+      { "name": "content_en", "type": "editor" },
       { "name": "cover_image", "type": "file", "maxSelect": 1 },
       { "name": "published_at", "type": "date" },
       { "name": "is_published", "type": "bool" }
@@ -195,7 +227,7 @@
       { "name": "email", "type": "email" },
       { "name": "phone", "type": "text" },
       { "name": "message", "type": "editor" },
-      { "name": "locale", "type": "select", "values": ["zh", "ja"] },
+      { "name": "locale", "type": "select", "values": ["zh", "ja", "en"] },
       { "name": "is_processed", "type": "bool" }
     ]
   }

@@ -2,30 +2,39 @@
   {
     "name_zh": "材料与工艺匹配",
     "name_ja": "材料と工法の選定",
+    "name_en": "Material and process matching",
     "role_zh": "面向实际工况选型",
     "role_ja": "実際の使用条件に合わせた最適化",
+    "role_en": "Selection based on real operating conditions",
     "quote_zh": "结合连铸、连轧、冷轧等不同工况，对材料、表面工艺和热处理路线进行匹配，兼顾寿命、成本与交付节奏。",
     "quote_ja": "連鋳・圧延・冷間工程など各工況に合わせて、材料、表面処理、熱処理条件を整理し、寿命とコストの両立を図ります。",
+    "quote_en": "For continuous casting, rolling, and cold-rolling conditions, we match materials, surface processes, and heat-treatment routes with attention to service life, cost, and delivery rhythm.",
     "sort_order": 1,
     "is_published": true
   },
   {
     "name_zh": "制造与质量控制",
     "name_ja": "製造と品質管理",
+    "name_en": "Manufacturing and quality control",
     "role_zh": "关键部件稳定交付",
     "role_ja": "重要部品の安定供給",
+    "role_en": "Stable delivery of key components",
     "quote_zh": "围绕堆焊、喷焊、热处理、调质与检测组织生产流程，保证关键部件在制造和修复过程中的质量稳定性。",
     "quote_ja": "肉盛、溶射、熱処理、調質、検査までを一貫して管理し、重要部品の再現性と品質安定を確保します。",
+    "quote_en": "Production is organized around weld overlay, spraying, heat treatment, quenching and tempering, and inspection to maintain stable quality in both new manufacturing and repair work.",
     "sort_order": 2,
     "is_published": true
   },
   {
     "name_zh": "售前与售后协同",
     "name_ja": "前後工程の連携支援",
+    "name_en": "Pre-sales and after-sales coordination",
     "role_zh": "更适合 B2B 项目推进",
     "role_ja": "B2B 案件に適した対応",
+    "role_en": "Better suited to B2B project execution",
     "quote_zh": "针对新制、修复或工况改进类项目，可结合客户停机计划、现场条件和后续使用节奏提供持续沟通与支持。",
     "quote_ja": "新作、補修、工法改善のいずれにおいても、停止日程や現場条件を踏まえた連携で継続的に対応します。",
+    "quote_en": "For new production, repair, or operating-condition improvement projects, we can coordinate with shutdown schedules, field conditions, and follow-up usage plans through sustained communication.",
     "sort_order": 3,
     "is_published": true
   }

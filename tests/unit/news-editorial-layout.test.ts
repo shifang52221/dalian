@@ -6,14 +6,17 @@ describe("news editorial layout", () => {
   it("uses a premium editorial list and a standard single-column article detail in both locales", () => {
     const zhListPage = readFileSync(resolve("f:/www/www13dalian/src/pages/news/index.astro"), "utf8");
     const jaListPage = readFileSync(resolve("f:/www/www13dalian/src/pages/ja/news/index.astro"), "utf8");
+    const enListPage = readFileSync(resolve("f:/www/www13dalian/src/pages/en/news/index.astro"), "utf8");
     const newsCard = readFileSync(resolve("f:/www/www13dalian/src/components/news/NewsCard.astro"), "utf8");
     const newsDetail = readFileSync(resolve("f:/www/www13dalian/src/components/news/NewsDetail.astro"), "utf8");
     const stylesheet = readFileSync(resolve("f:/www/www13dalian/src/styles/global.css"), "utf8");
 
     expect(zhListPage).toContain("news-editorial-hero");
     expect(jaListPage).toContain("news-editorial-hero");
+    expect(enListPage).toContain("news-editorial-hero");
     expect(zhListPage).toContain("news-featured-layout");
     expect(jaListPage).toContain("news-featured-layout");
+    expect(enListPage).toContain("news-featured-layout");
 
     expect(newsCard).toContain("news-card__shell");
     expect(newsCard).toContain("news-card__media");
