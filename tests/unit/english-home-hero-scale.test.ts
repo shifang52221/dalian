@@ -11,12 +11,12 @@ describe("english homepage hero scale", () => {
 
     expect(stylesheet).toContain('html[lang="en"] .page--home .hero__title-stack {');
     expect(stylesheet).toContain('html[lang="en"] .page--home .hero__content h1 {');
-    expect(stylesheet).toContain("font-size: clamp(2rem, 2.7vw, 3rem);");
-    expect(stylesheet).toContain("line-height: 1.14;");
-    expect(stylesheet).toContain("max-width: 15.8ch;");
+    expect(stylesheet).toContain("font-size: clamp(1.82rem, 2.2vw, 2.55rem);");
+    expect(stylesheet).toContain("line-height: 1.12;");
+    expect(stylesheet).toContain("max-width: 17.8ch;");
     expect(stylesheet).toContain(
       'html[lang="en"] .page--home .hero__title-stack .hero__title-display {',
     );
-    expect(stylesheet).toContain("max-width: min(100%, 18.5ch);");
+    expect(stylesheet).toContain("max-width: min(100%, 20ch);");
   });
 });

@@ -423,8 +423,9 @@ const homeContent: Record<Locale, HomeContent> = {
       eyebrow: "Roller equipment and surface engineering for steel production",
       title: "Manufacturing and Surface Engineering Solutions for Continuous Casting and Rolling Applications",
       titleLines: [
-        "Manufacturing for continuous casting and rolling applications",
-        "and surface engineering solutions",
+        "Manufacturing for continuous casting",
+        "and rolling applications",
+        "with surface engineering solutions",
       ],
       description:
         "Dalian Boheng New Technology Co., Ltd. specializes in complete roller conveyor equipment and spare parts for continuous casting, continuous rolling, and cold rolling, supported by core capabilities such as weld overlay, thermal spraying, and plasma cladding.",

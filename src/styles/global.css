@@ -2552,19 +2552,19 @@ img {
 }
 
 html[lang="en"] .page--home .hero__title-stack {
-  gap: 18px;
+  gap: 16px;
 }
 
 html[lang="en"] .page--home .hero__content h1 {
-  max-width: 15.8ch;
-  font-size: clamp(2rem, 2.7vw, 3rem);
-  font-weight: 620;
-  line-height: 1.14;
-  letter-spacing: -0.015em;
+  max-width: 17.8ch;
+  font-size: clamp(1.82rem, 2.2vw, 2.55rem);
+  font-weight: 610;
+  line-height: 1.12;
+  letter-spacing: -0.01em;
 }
 
 html[lang="en"] .page--home .hero__title-stack .hero__title-display {
-  max-width: min(100%, 18.5ch);
+  max-width: min(100%, 20ch);
 }
 
 .hero__content p {
@@ -4490,12 +4490,12 @@ html[lang="en"] .page--home .hero__title-stack .hero__title-display {
   }
 
   html[lang="en"] .page--home .hero__title-stack {
-    gap: 14px;
+    gap: 12px;
   }
 
   html[lang="en"] .page--home .hero__content h1 {
-    font-size: clamp(1.9rem, 7.2vw, 2.45rem);
-    line-height: 1.13;
+    font-size: clamp(1.68rem, 5.9vw, 2.1rem);
+    line-height: 1.1;
   }
 
   .hero__title-stack .hero__title-display {

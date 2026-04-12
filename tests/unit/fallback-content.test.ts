@@ -34,6 +34,11 @@ describe("getFallbackHomeContent", () => {
     const en = getFallbackHomeContent("en");
 
     expect(en.hero.title).toContain("Continuous Casting");
+    expect(en.hero.titleLines).toEqual([
+      "Manufacturing for continuous casting",
+      "and rolling applications",
+      "with surface engineering solutions",
+    ]);
     expect(en.hero.highlights).toEqual([
       "Continuous Casting Equipment",
       "Continuous Rolling Equipment",
