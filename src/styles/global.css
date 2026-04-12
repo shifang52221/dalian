@@ -2556,15 +2556,15 @@ html[lang="en"] .page--home .hero__title-stack {
 }
 
 html[lang="en"] .page--home .hero__content h1 {
-  max-width: 14.4ch;
-  font-size: clamp(2.35rem, 3.35vw, 3.5rem);
-  font-weight: 650;
-  line-height: 1.18;
+  max-width: 15.8ch;
+  font-size: clamp(2rem, 2.7vw, 3rem);
+  font-weight: 620;
+  line-height: 1.14;
   letter-spacing: -0.015em;
 }
 
 html[lang="en"] .page--home .hero__title-stack .hero__title-display {
-  max-width: min(100%, 17.25ch);
+  max-width: min(100%, 18.5ch);
 }
 
 .hero__content p {
@@ -4494,8 +4494,8 @@ html[lang="en"] .page--home .hero__title-stack .hero__title-display {
   }
 
   html[lang="en"] .page--home .hero__content h1 {
-    font-size: clamp(2.15rem, 8.2vw, 2.85rem);
-    line-height: 1.16;
+    font-size: clamp(1.9rem, 7.2vw, 2.45rem);
+    line-height: 1.13;
   }
 
   .hero__title-stack .hero__title-display {
