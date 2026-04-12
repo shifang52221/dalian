@@ -2551,6 +2551,22 @@ img {
   max-width: min(100%, 15.2ch);
 }
 
+html[lang="en"] .page--home .hero__title-stack {
+  gap: 18px;
+}
+
+html[lang="en"] .page--home .hero__content h1 {
+  max-width: 14.4ch;
+  font-size: clamp(2.35rem, 3.35vw, 3.5rem);
+  font-weight: 650;
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+}
+
+html[lang="en"] .page--home .hero__title-stack .hero__title-display {
+  max-width: min(100%, 17.25ch);
+}
+
 .hero__content p {
   color: rgba(255, 255, 255, 0.74);
   font-size: 1rem;
@@ -4471,6 +4487,15 @@ img {
     max-width: 100%;
     font-size: clamp(2.5rem, 10vw, 3.5rem);
     line-height: 1.12;
+  }
+
+  html[lang="en"] .page--home .hero__title-stack {
+    gap: 14px;
+  }
+
+  html[lang="en"] .page--home .hero__content h1 {
+    font-size: clamp(2.15rem, 8.2vw, 2.85rem);
+    line-height: 1.16;
   }
 
   .hero__title-stack .hero__title-display {
