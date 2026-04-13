@@ -94,12 +94,32 @@ function getRequestOrigin(request: Request) {
   return url.origin;
 }
 
+function getRequestHosts(request: Request) {
+  const url = new URL(request.url);
+  const forwardedHost = request.headers
+    .get("x-forwarded-host")
+    ?.split(",")
+    .map((value) => value.trim())
+    .filter(Boolean)[0];
+  const hostHeader = request.headers.get("host")?.trim();
+
+  return new Set([url.host, forwardedHost, hostHeader].filter(Boolean));
+}
+
+function isSameRequestHost(candidate: string, request: Request) {
+  try {
+    return getRequestHosts(request).has(new URL(candidate).host);
+  } catch {
+    return false;
+  }
+}
+
 function isAllowedOrigin(request: Request) {
   const requestOrigin = getRequestOrigin(request);
   const originHeader = request.headers.get("origin")?.trim();
 
   if (originHeader) {
-    return originHeader === requestOrigin;
+    return originHeader === requestOrigin || isSameRequestHost(originHeader, request);
   }
 
   const refererHeader = request.headers.get("referer")?.trim();
@@ -108,7 +128,8 @@ function isAllowedOrigin(request: Request) {
   }
 
   try {
-    return new URL(refererHeader).origin === requestOrigin;
+    return new URL(refererHeader).origin === requestOrigin
+      || isSameRequestHost(refererHeader, request);
   } catch {
     return false;
   }

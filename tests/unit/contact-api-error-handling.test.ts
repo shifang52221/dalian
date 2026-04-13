@@ -142,6 +142,25 @@ describe("contact api error handling", () => {
     expect(response.status).toBe(200);
   });
 
+  it("accepts proxied same-host submissions when host matches origin but internal protocol is http", async () => {
+    const { POST } = await import("../../src/pages/api/contact");
+
+    const response = await POST({
+      request: new Request("http://boheng-tec.com/api/contact", {
+        method: "POST",
+        body: createValidFormData(),
+        headers: {
+          origin: "https://boheng-tec.com",
+          referer: "https://boheng-tec.com/",
+          host: "boheng-tec.com",
+          "x-real-ip": "203.0.113.26",
+        },
+      }),
+    } as never);
+
+    expect(response.status).toBe(200);
+  });
+
   it("rejects cross-origin contact submissions", async () => {
     const { submitContactMessage } = await import("../../src/actions/contact");
     const { POST } = await import("../../src/pages/api/contact");
