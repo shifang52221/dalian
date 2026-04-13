@@ -1,7 +1,7 @@
 import type { APIRoute } from "astro";
 import { ZodError } from "zod";
 import { submitContactMessage } from "../../actions/contact";
-import { getPocketBaseMessageWriter } from "../../lib/pocketbase";
+import { pb } from "../../lib/pocketbase";
 import { contactSchema } from "../../lib/validation/contact";
 
 const messages = {
@@ -166,8 +166,7 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     try {
-      const messageWriter = await getPocketBaseMessageWriter();
-      await submitContactMessage(messageWriter, parsed);
+      await submitContactMessage(pb, parsed);
     } catch {
       return buildJsonResponse(
         {

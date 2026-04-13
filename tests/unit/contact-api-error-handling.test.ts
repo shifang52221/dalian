@@ -19,7 +19,7 @@ describe("contact api error handling", () => {
       submitContactMessage: vi.fn(async () => ({ id: "msg_1" })),
     }));
     vi.doMock("../../src/lib/pocketbase", () => ({
-      getPocketBaseMessageWriter: vi.fn(async () => ({})),
+      pb: {},
     }));
   });
 
@@ -51,7 +51,7 @@ describe("contact api error handling", () => {
       }),
     }));
     vi.doMock("../../src/lib/pocketbase", () => ({
-      getPocketBaseMessageWriter: vi.fn(async () => ({})),
+      pb: {},
     }));
 
     const { POST } = await import("../../src/pages/api/contact");

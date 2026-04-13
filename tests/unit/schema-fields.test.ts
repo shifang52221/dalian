@@ -120,7 +120,7 @@ describe("PocketBase schema", () => {
     expect(productCases?.viewRule).toBe("is_published = true");
     expect(cooperationHighlights?.listRule).toBe("is_published = true");
     expect(cooperationHighlights?.viewRule).toBe("is_published = true");
-    expect(messages?.createRule).toBeNull();
+    expect(messages?.createRule).toBe("");
     expect(messages?.listRule).toBeNull();
     expect(messages?.viewRule).toBeNull();
     expect(messages?.fields.find((field) => field.name === "locale")?.values).toContain("en");
