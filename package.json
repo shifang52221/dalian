@@ -17,20 +17,29 @@
     "cms:seed:reset": "node scripts/pocketbase-seed.mjs --reset"
   },
   "dependencies": {
-    "@astrojs/node": "^10.0.1",
+    "@astrojs/node": "^10.0.4",
     "@shikijs/engine-oniguruma": "^4.0.2",
-    "astro": "^6.0.4",
+    "astro": "^6.1.5",
     "pocketbase": "^0.26.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@astrojs/react": "^5.0.1",
+    "@astrojs/react": "^5.0.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "clsx": "^2.1.1",
     "typescript": "^5.9.3",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "vite": "7.3.2",
+    "picomatch": "4.0.4",
+    "h3": "1.15.11",
+    "defu": "6.1.7",
+    "anymatch": {
+      "picomatch": "2.3.2"
+    }
   }
 }
