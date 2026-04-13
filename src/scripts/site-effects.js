@@ -305,6 +305,46 @@ function setupCapabilityPreview() {
   });
 }
 
+function setupContactForm() {
+  const form = document.querySelector("[data-contact-form]");
+  const status = document.querySelector("[data-contact-status]");
+
+  if (!(form instanceof HTMLFormElement) || !(status instanceof HTMLElement)) {
+    return;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    status.textContent = "";
+
+    const formData = new FormData(form);
+    const payload = Object.fromEntries(formData.entries());
+
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await response.json().catch(() => ({
+      ok: false,
+      message: "Request failed.",
+    }));
+
+    status.textContent = result.message ?? "";
+
+    if (response.ok) {
+      form.reset();
+      const localeInput = form.querySelector('input[name="locale"]');
+      if (localeInput instanceof HTMLInputElement) {
+        localeInput.value = localeInput.defaultValue;
+      }
+    }
+  });
+}
+
 function dismissPreloader() {
   if (!preloader) {
     return;
@@ -331,5 +371,6 @@ setupMobileNav();
 setupReveals();
 setupTestimonials();
 setupCapabilityPreview();
+setupContactForm();
 updateScrollState();
 window.addEventListener("scroll", updateScrollState, { passive: true });

@@ -7,7 +7,7 @@ const securityHeaders = {
     "form-action 'self'",
     "frame-ancestors 'self'",
     "object-src 'none'",
-    "script-src 'self' 'unsafe-inline'",
+    "script-src 'self'",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: https://api.map.baidu.com https://map.baidu.com https://www.amap.com",
     "font-src 'self' data:",
