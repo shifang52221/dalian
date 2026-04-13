@@ -96,6 +96,39 @@ describe("mapLocaleRecord", () => {
     expect(items[0]?.content).toEqual(["English body"]);
   });
 
+  it("falls back to available news content when english news fields are blank", async () => {
+    const client = {
+      collection() {
+        return {
+          async getFullList() {
+            return [
+              {
+                slug: "fallback-news-entry",
+                published_at: "2026-04-10",
+                is_published: true,
+                title_zh: "中文新闻标题",
+                title_ja: "日本語ニュースタイトル",
+                title_en: "",
+                summary_zh: "中文摘要",
+                summary_ja: "日本語概要",
+                summary_en: "",
+                content_zh: "中文正文第一段\n中文正文第二段",
+                content_ja: "日本語本文",
+                content_en: "",
+              },
+            ];
+          },
+        };
+      },
+    };
+
+    const items = await getNewsList("en", client as never);
+
+    expect(items[0]?.title).toBe("中文新闻标题");
+    expect(items[0]?.summary).toBe("中文摘要");
+    expect(items[0]?.content).toEqual(["中文正文第一段", "中文正文第二段"]);
+  });
+
   it("sanitizes malicious html from cms news content", async () => {
     const client = {
       collection() {
@@ -360,6 +393,16 @@ describe("mapLocaleRecord", () => {
           alt: "连铸设备",
         },
       },
+      {
+        title: "连轧设备",
+        description: "上下夹送辊、助卷辊、导辊、层流辊等产品服务于多条轧线。",
+        tags: ["Cr8-Mo-W-Co", "Ni-Cr-B-Si", "stellite 合金"],
+      },
+      {
+        title: "其他产品",
+        description: "包括料斗、法兰、轴套、阀门、转子、汽缸修复等定制化业务。",
+        tags: ["耐磨层", "修复", "特殊工况"],
+      },
     ]);
     expect(result.testimonials.items).toEqual([
       {
@@ -468,6 +511,176 @@ describe("mapLocaleRecord", () => {
     expect(result.about.points).toEqual(["English point"]);
     expect(result.about.badge).toEqual({ value: "DALIAN", label: "English badge" });
     expect(result.about.stats).toEqual([{ value: "1", label: "English about stat" }]);
+  });
+
+  it("keeps fallback english homepage copy when cms english fields are blank", async () => {
+    const collections: Record<string, Array<Record<string, unknown>>> = {
+      site_settings: [
+        {
+          company_name_zh: "大连博恒新技术有限公司",
+          company_name_ja: "大連博恒新技術有限公司",
+          company_name_en: "",
+          phone: "86-13591839861",
+          email: "710877810@sina.com",
+          address_zh: "中文地址",
+          address_ja: "日本語住所",
+          address_en: "",
+        },
+      ],
+      home_sections: [],
+      home_hero: [
+        {
+          eyebrow_zh: "中文眉题",
+          eyebrow_ja: "日本語アイブロー",
+          eyebrow_en: "",
+          title_zh: "中文标题",
+          title_ja: "日本語タイトル",
+          title_en: "",
+          description_zh: "中文描述",
+          description_ja: "日本語説明",
+          description_en: "",
+          primary_cta_label_zh: "中文按钮",
+          primary_cta_label_ja: "日本語ボタン",
+          primary_cta_label_en: "",
+          secondary_cta_label_zh: "中文次按钮",
+          secondary_cta_label_ja: "日本語第二ボタン",
+          secondary_cta_label_en: "",
+          highlights_zh: ["中文亮点"],
+          highlights_ja: ["日本語ハイライト"],
+          highlights_en: [],
+          stats_zh: [{ value: "1", label: "中文" }],
+          stats_ja: [{ value: "1", label: "日本語" }],
+          stats_en: [],
+          is_published: true,
+        },
+      ],
+      home_about: [
+        {
+          eyebrow_zh: "中文简介",
+          eyebrow_ja: "日本語紹介",
+          eyebrow_en: "",
+          title_zh: "中文企业简介",
+          title_ja: "日本語企業紹介",
+          title_en: "",
+          description_zh: "中文简介正文",
+          description_ja: "日本語紹介本文",
+          description_en: "",
+          points_zh: ["中文要点"],
+          points_ja: ["日本語ポイント"],
+          points_en: [],
+          badge_value: "DALIAN",
+          badge_label_zh: "中文徽标",
+          badge_label_ja: "日本語バッジ",
+          badge_label_en: "",
+          stats_zh: [{ value: "1", label: "中文统计" }],
+          stats_ja: [{ value: "1", label: "日本語統計" }],
+          stats_en: [],
+          is_published: true,
+        },
+      ],
+      capabilities: [
+        {
+          title_zh: "埋弧堆焊",
+          title_ja: "サブマージアーク肉盛",
+          title_en: "",
+          description_zh: "中文能力一",
+          description_ja: "日本語能力一",
+          description_en: "",
+          sort_order: 1,
+          is_published: true,
+        },
+      ],
+      advantages: [
+        {
+          title_zh: "工艺经验",
+          title_ja: "工法経験",
+          title_en: "",
+          description_zh: "中文优势一",
+          description_ja: "日本語強み一",
+          description_en: "",
+          sort_order: 1,
+          is_published: true,
+        },
+      ],
+      product_cases: [
+        {
+          category_zh: "连铸设备",
+          category_ja: "連鋳設備",
+          category_en: "",
+          description_zh: "中文案例一",
+          description_ja: "日本語事例一",
+          description_en: "",
+          tags_zh: ["中文标签"],
+          tags_ja: ["日本語タグ"],
+          tags_en: [],
+          sort_order: 1,
+          is_published: true,
+        },
+      ],
+      cooperation_highlights: [
+        {
+          name_zh: "材料与工艺匹配",
+          name_ja: "材料と工法の選定",
+          name_en: "",
+          role_zh: "中文角色",
+          role_ja: "日本語役割",
+          role_en: "",
+          quote_zh: "中文反馈",
+          quote_ja: "日本語フィードバック",
+          quote_en: "",
+          sort_order: 1,
+          is_published: true,
+        },
+      ],
+      news: [],
+    };
+
+    const client = {
+      collection(name: string) {
+        return {
+          async getFullList() {
+            return collections[name] ?? [];
+          },
+        };
+      },
+    };
+
+    const result = await getHomePageContent("en", client as never);
+
+    expect(result.siteSettings.companyName).toBe("Dalian Boheng New Technology Co., Ltd.");
+    expect(result.siteSettings.address).toBe(
+      "Hanjia Village, Sanjianpu Subdistrict, Lushunkou District, Dalian, Liaoning, China",
+    );
+    expect(result.hero.title).toBe(
+      "Manufacturing and Surface Engineering Solutions for Continuous Casting and Rolling Applications",
+    );
+    expect(result.hero.primaryCta).toBe("Contact Us");
+    expect(result.about.eyebrow).toBe("Company Profile");
+    expect(result.about.title).toBe(
+      "A specialized manufacturing plant in Dalian for steel equipment and surface engineering",
+    );
+    expect(result.capabilities.items[0]).toMatchObject({
+      title: "Submerged-Arc Cladding",
+      description:
+        "Suitable for new production and repair of key roller components, with high load capacity and stable process control.",
+    });
+    expect(result.advantages.items[0]).toMatchObject({
+      title: "Process Experience",
+      description:
+        "Extensive experience in materials and process applications across continuous casting, continuous rolling, and cold rolling conditions.",
+    });
+    expect(result.projects.categories[0]).toMatchObject({
+      title: "Continuous Casting Equipment",
+      description:
+        "Products such as straightening rolls, caster rolls, foot rolls, and sleeves cover a wide range of operating scenarios.",
+    });
+    expect(result.projects.categories[2]).toMatchObject({
+      title: "Other Products",
+    });
+    expect(result.testimonials.items[0]).toMatchObject({
+      name: "Material and process matching",
+      role: "Selection based on real operating conditions",
+    });
   });
 
   it("keeps homepage fallback content when new cms collections are unavailable", async () => {

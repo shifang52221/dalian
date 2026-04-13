@@ -284,6 +284,80 @@ function parseStatArray(value: unknown) {
   return items.length > 0 ? items : undefined;
 }
 
+function hasMeaningfulValue(value: unknown) {
+  if (typeof value === "string") {
+    return value.trim().length > 0;
+  }
+
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  return value != null;
+}
+
+function getNonEmptyString(value: unknown) {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed ? trimmed : undefined;
+  }
+
+  if (value == null) {
+    return undefined;
+  }
+
+  const trimmed = String(value).trim();
+  return trimmed ? trimmed : undefined;
+}
+
+function getLocaleFallbackChain(locale: Locale): Locale[] {
+  switch (locale) {
+    case "en":
+      return ["zh", "ja"];
+    case "ja":
+      return ["zh", "en"];
+    case "zh":
+    default:
+      return ["ja", "en"];
+  }
+}
+
+function mergeProjectCategoriesWithFallback(
+  primary: HomeContent["projects"]["categories"],
+  fallback: HomeContent["projects"]["categories"],
+) {
+  if (primary.length === 0) {
+    return fallback;
+  }
+
+  const fallbackTitles = new Set(
+    fallback.map((item) => item.title.trim()).filter(Boolean),
+  );
+  const primaryTitles = primary.map((item) => item.title.trim()).filter(Boolean);
+  const isPartialDefaultSet =
+    primaryTitles.length > 0 &&
+    primaryTitles.length < fallbackTitles.size &&
+    primaryTitles.every((title) => fallbackTitles.has(title));
+
+  if (!isPartialDefaultSet) {
+    return primary;
+  }
+
+  const merged = [...primary];
+  const existingTitles = new Set(primaryTitles);
+
+  for (const fallbackItem of fallback) {
+    const fallbackTitle = fallbackItem.title.trim();
+    if (!fallbackTitle || existingTitles.has(fallbackTitle)) {
+      continue;
+    }
+
+    merged.push(fallbackItem);
+  }
+
+  return merged;
+}
+
 function parseNewsContent(value: unknown) {
   const raw = String(value ?? "").trim();
   const decoded = decodeHtmlEntities(raw).trim();
@@ -433,24 +507,44 @@ function getLocalizedValue<T = unknown>(
   record: Record<string, unknown>,
   baseKey: string,
   locale: Locale,
+  fallbackLocales: Locale[] = [],
 ) {
-  return record[`${baseKey}${getLocaleSuffix(locale)}`] as T | undefined;
+  const locales = [locale, ...fallbackLocales.filter((item) => item !== locale)];
+
+  for (const activeLocale of locales) {
+    const value = record[`${baseKey}${getLocaleSuffix(activeLocale)}`];
+    if (hasMeaningfulValue(value)) {
+      return value as T;
+    }
+  }
+
+  return undefined;
 }
 
 export function mapLocaleRecord<T extends LocaleFieldRecord>(
   record: T,
   locale: Locale,
+  fallbackLocales: Locale[] = [],
 ) {
-  const suffix = getLocaleSuffix(locale);
   const mapped: Record<string, unknown> = {};
+  const locales = [locale, ...fallbackLocales.filter((item) => item !== locale)];
+  const baseKeys = new Set<string>();
 
-  for (const [key, value] of Object.entries(record)) {
-    if (!key.endsWith(suffix)) {
-      continue;
+  for (const key of Object.keys(record)) {
+    for (const activeLocale of locales) {
+      const suffix = getLocaleSuffix(activeLocale);
+      if (key.endsWith(suffix)) {
+        baseKeys.add(key.slice(0, -suffix.length));
+        break;
+      }
     }
+  }
 
-    const baseKey = key.slice(0, -suffix.length);
-    mapped[baseKey] = value;
+  for (const baseKey of baseKeys) {
+    const value = getLocalizedValue(record, baseKey, locale, fallbackLocales);
+    if (value !== undefined) {
+      mapped[baseKey] = value;
+    }
   }
 
   return mapped;
@@ -637,18 +731,19 @@ export async function getHomePageContent(
       }
 
       if (capabilities.length > 0) {
-        result.capabilities.items = sortBySortOrder(capabilities.filter(isPublished)).map((item) => {
+        result.capabilities.items = sortBySortOrder(capabilities.filter(isPublished)).map((item, index) => {
           const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
+          const fallbackItem = fallback.capabilities.items[index];
           const previewImage = buildMediaAsset(
             "capabilities",
             item.id,
             item.preview_image,
-            localized.title,
+            localized.title ?? fallbackItem?.title,
           );
 
           return {
-            title: String(localized.title ?? ""),
-            description: String(localized.description ?? ""),
+            title: getNonEmptyString(localized.title) ?? fallbackItem?.title ?? "",
+            description: getNonEmptyString(localized.description) ?? fallbackItem?.description ?? "",
             previewGroup: String(item.preview_group ?? "").trim() || undefined,
             image: previewImage,
           };
@@ -656,50 +751,61 @@ export async function getHomePageContent(
       }
 
       if (advantages.length > 0) {
-        result.advantages.items = sortBySortOrder(advantages.filter(isPublished)).map((item) => {
+        result.advantages.items = sortBySortOrder(advantages.filter(isPublished)).map((item, index) => {
           const localized = mapLocaleRecord(item as AdvantageRecord, locale) as Record<
             string,
             unknown
           >;
+          const fallbackItem = fallback.advantages.items[index];
           return {
-            title: String(localized.title ?? ""),
-            description: String(localized.description ?? ""),
+            title: getNonEmptyString(localized.title) ?? fallbackItem?.title ?? "",
+            description: getNonEmptyString(localized.description) ?? fallbackItem?.description ?? "",
           };
         });
       }
 
       if (productCases.length > 0) {
-        result.projects.categories = sortBySortOrder(productCases.filter(isPublished)).map((item) => {
+        const cmsProjectCategories = sortBySortOrder(productCases.filter(isPublished)).map((item, index) => {
           const localized = mapLocaleRecord(item, locale) as Record<string, unknown>;
           const tags = getLocalizedValue(item, "tags", locale);
+          const fallbackItem = fallback.projects.categories[index];
           const projectImage = buildMediaAsset(
             "product_cases",
             item.id,
             item.image,
-            localized.category,
+            localized.category ?? fallbackItem?.title,
           );
 
           return {
-            title: String(localized.category ?? ""),
-            description: String(localized.description ?? ""),
-            tags: Array.isArray(tags) ? tags.map((tag) => String(tag)) : [],
+            title: getNonEmptyString(localized.category) ?? fallbackItem?.title ?? "",
+            description:
+              getNonEmptyString(localized.description) ?? fallbackItem?.description ?? "",
+            tags: Array.isArray(tags)
+              ? tags.map((tag) => String(tag))
+              : (fallbackItem?.tags ?? []),
             image: projectImage,
           };
         });
+
+        result.projects.categories = mergeProjectCategoriesWithFallback(
+          cmsProjectCategories,
+          fallback.projects.categories,
+        );
       }
 
       if (cooperationHighlights.length > 0) {
         result.testimonials.items = sortBySortOrder(
           cooperationHighlights.filter(isPublished),
-        ).map((item) => {
+        ).map((item, index) => {
           const localized = mapLocaleRecord(
             item as CooperationHighlightRecord,
             locale,
           ) as Record<string, unknown>;
+          const fallbackItem = fallback.testimonials.items[index];
           return {
-            name: String(localized.name ?? ""),
-            role: String(localized.role ?? ""),
-            quote: String(localized.quote ?? ""),
+            name: getNonEmptyString(localized.name) ?? fallbackItem?.name ?? "",
+            role: getNonEmptyString(localized.role) ?? fallbackItem?.role ?? "",
+            quote: getNonEmptyString(localized.quote) ?? fallbackItem?.quote ?? "",
           };
         });
       }
@@ -759,7 +865,11 @@ export async function getNewsList(
       }
 
       return records.map((record) => {
-        const localized = mapLocaleRecord(record, locale) as Record<string, unknown>;
+        const localized = mapLocaleRecord(
+          record,
+          locale,
+          getLocaleFallbackChain(locale),
+        ) as Record<string, unknown>;
         const imageSrc = buildMediaProxyUrl(
           "news",
           record.id ?? record.slug,

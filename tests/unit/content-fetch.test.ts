@@ -409,6 +409,75 @@ describe("content-api fetchers", () => {
     ]);
   });
 
+  it("keeps fallback product case categories when the cms returns only a partial list", async () => {
+    const client = {
+      collection(name: string) {
+        return {
+          async getFullList() {
+            if (name === "site_settings") return [];
+            if (name === "home_sections") return [];
+            if (name === "home_hero") return [];
+            if (name === "home_about") return [];
+            if (name === "capabilities") return [];
+            if (name === "advantages") return [];
+            if (name === "news") return [];
+            if (name === "cooperation_highlights") return [];
+            if (name === "product_cases") {
+              return [
+                {
+                  category_zh: "连铸设备",
+                  category_ja: "連鋳設備",
+                  category_en: "Continuous Casting Equipment",
+                  description_zh: "后台连铸设备",
+                  description_ja: "CMS連鋳設備",
+                  description_en: "CMS continuous casting equipment",
+                  tags_zh: ["后台标签一"],
+                  tags_ja: ["CMSタグ1"],
+                  tags_en: ["CMS tag 1"],
+                  sort_order: 1,
+                  is_published: true,
+                },
+                {
+                  category_zh: "连轧设备",
+                  category_ja: "圧延設備",
+                  category_en: "Continuous Rolling Equipment",
+                  description_zh: "后台连轧设备",
+                  description_ja: "CMS圧延設備",
+                  description_en: "CMS continuous rolling equipment",
+                  tags_zh: ["后台标签二"],
+                  tags_ja: ["CMSタグ2"],
+                  tags_en: ["CMS tag 2"],
+                  sort_order: 2,
+                  is_published: true,
+                },
+              ];
+            }
+
+            return [];
+          },
+        };
+      },
+    };
+
+    const result = await getHomePageContent("zh", client);
+
+    expect(result.projects.categories.map((item) => item.title)).toEqual([
+      "连铸设备",
+      "连轧设备",
+      "其他产品",
+    ]);
+    expect(result.projects.categories[0]).toMatchObject({
+      title: "连铸设备",
+      description: "后台连铸设备",
+      tags: ["后台标签一"],
+    });
+    expect(result.projects.categories[2]).toMatchObject({
+      title: "其他产品",
+      description: "包括料斗、法兰、轴套、阀门、转子、汽缸修复等定制化业务。",
+      tags: ["耐磨层", "修复", "特殊工况"],
+    });
+  });
+
   it("builds shell site settings from PocketBase fields", async () => {
     const client = {
       collection(name: string) {
