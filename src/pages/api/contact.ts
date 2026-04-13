@@ -82,8 +82,20 @@ function getClientAddress(request: Request) {
   return userAgent ? `ua:${userAgent.slice(0, 120)}` : "unknown";
 }
 
+function getRequestOrigin(request: Request) {
+  const url = new URL(request.url);
+  const forwardedProto = request.headers.get("x-forwarded-proto")?.trim();
+  const forwardedHost = request.headers.get("x-forwarded-host")?.trim();
+
+  if (forwardedProto && forwardedHost) {
+    return `${forwardedProto}://${forwardedHost}`;
+  }
+
+  return url.origin;
+}
+
 function isAllowedOrigin(request: Request) {
-  const requestOrigin = new URL(request.url).origin;
+  const requestOrigin = getRequestOrigin(request);
   const originHeader = request.headers.get("origin")?.trim();
 
   if (originHeader) {
