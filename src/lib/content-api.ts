@@ -310,6 +310,15 @@ function getNonEmptyString(value: unknown) {
   return trimmed ? trimmed : undefined;
 }
 
+function normalizePlainText(value: unknown) {
+  const resolved = getNonEmptyString(value);
+  if (!resolved) {
+    return undefined;
+  }
+
+  return normalizeSummaryText(resolved);
+}
+
 function getLocaleFallbackChain(locale: Locale): Locale[] {
   switch (locale) {
     case "en":
@@ -492,10 +501,10 @@ function buildSiteSettings(
   const localizedSettings = mapLocaleRecord(settings, locale) as Record<string, unknown>;
 
   return {
-    companyName: String(localizedSettings.company_name ?? fallback.companyName),
-    address: String(localizedSettings.address ?? fallback.address),
-    phone: String(settings.phone ?? fallback.phone),
-    email: String(settings.email ?? fallback.email),
+    companyName: normalizePlainText(localizedSettings.company_name) ?? fallback.companyName,
+    address: normalizePlainText(localizedSettings.address) ?? fallback.address,
+    phone: normalizePlainText(settings.phone) ?? fallback.phone,
+    email: normalizePlainText(settings.email) ?? fallback.email,
   };
 }
 
@@ -622,10 +631,10 @@ export async function getHomePageContent(
 
       const heroSection = sectionMap.get("hero");
       if (heroSection?.title) {
-        result.hero.title = String(heroSection.title);
+        result.hero.title = normalizePlainText(heroSection.title) ?? result.hero.title;
       }
       if (heroSection?.summary) {
-        result.hero.description = String(heroSection.summary);
+        result.hero.description = normalizePlainText(heroSection.summary) ?? result.hero.description;
       }
 
       const heroRecord = getFirstPublishedRecord(heroRecords) as
@@ -637,19 +646,18 @@ export async function getHomePageContent(
         const stats = parseStatArray(getLocalizedValue(heroRecord, "stats", locale));
 
         if (localizedHero.eyebrow) {
-          result.hero.eyebrow = String(localizedHero.eyebrow);
+          result.hero.eyebrow = normalizePlainText(localizedHero.eyebrow) ?? result.hero.eyebrow;
         }
         if (localizedHero.title) {
-          result.hero.title = String(localizedHero.title);
+          result.hero.title = normalizePlainText(localizedHero.title) ?? result.hero.title;
         }
         if (localizedHero.description) {
-          result.hero.description = String(localizedHero.description);
+          result.hero.description =
+            normalizePlainText(localizedHero.description) ?? result.hero.description;
         }
         const primaryCtaLabel = getLocalizedValue(heroRecord, "primary_cta_label", locale);
         if (primaryCtaLabel) {
-          result.hero.primaryCta = String(
-            primaryCtaLabel,
-          );
+          result.hero.primaryCta = normalizePlainText(primaryCtaLabel) ?? result.hero.primaryCta;
         }
         const secondaryCtaLabel = getLocalizedValue(
           heroRecord,
@@ -657,12 +665,11 @@ export async function getHomePageContent(
           locale,
         );
         if (secondaryCtaLabel) {
-          result.hero.secondaryCta = String(
-            secondaryCtaLabel,
-          );
+          result.hero.secondaryCta =
+            normalizePlainText(secondaryCtaLabel) ?? result.hero.secondaryCta;
         }
         if (highlights) {
-          result.hero.highlights = highlights;
+          result.hero.highlights = highlights.map((item) => normalizePlainText(item) ?? item);
         }
         if (stats) {
           result.hero.stats = stats;
@@ -682,10 +689,10 @@ export async function getHomePageContent(
 
       const aboutSection = sectionMap.get("about");
       if (aboutSection?.title) {
-        result.about.title = String(aboutSection.title);
+        result.about.title = normalizePlainText(aboutSection.title) ?? result.about.title;
       }
       if (aboutSection?.summary) {
-        result.about.description = String(aboutSection.summary);
+        result.about.description = normalizePlainText(aboutSection.summary) ?? result.about.description;
       }
 
       const aboutRecord = getFirstPublishedRecord(aboutRecords) as
@@ -697,21 +704,22 @@ export async function getHomePageContent(
         const stats = parseStatArray(getLocalizedValue(aboutRecord, "stats", locale));
 
         if (localizedAbout.eyebrow) {
-          result.about.eyebrow = String(localizedAbout.eyebrow);
+          result.about.eyebrow = normalizePlainText(localizedAbout.eyebrow) ?? result.about.eyebrow;
         }
         if (localizedAbout.title) {
-          result.about.title = String(localizedAbout.title);
+          result.about.title = normalizePlainText(localizedAbout.title) ?? result.about.title;
         }
         if (localizedAbout.description) {
-          result.about.description = String(localizedAbout.description);
+          result.about.description =
+            normalizePlainText(localizedAbout.description) ?? result.about.description;
         }
         if (points) {
-          result.about.points = points;
+          result.about.points = points.map((item) => normalizePlainText(item) ?? item);
         }
         if (aboutRecord.badge_value || localizedAbout.badge_label) {
           result.about.badge = {
-            value: String(aboutRecord.badge_value ?? result.about.badge.value),
-            label: String(localizedAbout.badge_label ?? result.about.badge.label),
+            value: normalizePlainText(aboutRecord.badge_value) ?? result.about.badge.value,
+            label: normalizePlainText(localizedAbout.badge_label) ?? result.about.badge.label,
           };
         }
         if (stats) {
@@ -742,8 +750,8 @@ export async function getHomePageContent(
           );
 
           return {
-            title: getNonEmptyString(localized.title) ?? fallbackItem?.title ?? "",
-            description: getNonEmptyString(localized.description) ?? fallbackItem?.description ?? "",
+            title: normalizePlainText(localized.title) ?? fallbackItem?.title ?? "",
+            description: normalizePlainText(localized.description) ?? fallbackItem?.description ?? "",
             previewGroup: String(item.preview_group ?? "").trim() || undefined,
             image: previewImage,
           };
@@ -758,8 +766,8 @@ export async function getHomePageContent(
           >;
           const fallbackItem = fallback.advantages.items[index];
           return {
-            title: getNonEmptyString(localized.title) ?? fallbackItem?.title ?? "",
-            description: getNonEmptyString(localized.description) ?? fallbackItem?.description ?? "",
+            title: normalizePlainText(localized.title) ?? fallbackItem?.title ?? "",
+            description: normalizePlainText(localized.description) ?? fallbackItem?.description ?? "",
           };
         });
       }
@@ -777,11 +785,11 @@ export async function getHomePageContent(
           );
 
           return {
-            title: getNonEmptyString(localized.category) ?? fallbackItem?.title ?? "",
+            title: normalizePlainText(localized.category) ?? fallbackItem?.title ?? "",
             description:
-              getNonEmptyString(localized.description) ?? fallbackItem?.description ?? "",
+              normalizePlainText(localized.description) ?? fallbackItem?.description ?? "",
             tags: Array.isArray(tags)
-              ? tags.map((tag) => String(tag))
+              ? tags.map((tag) => normalizePlainText(tag) ?? String(tag))
               : (fallbackItem?.tags ?? []),
             image: projectImage,
           };
@@ -803,9 +811,9 @@ export async function getHomePageContent(
           ) as Record<string, unknown>;
           const fallbackItem = fallback.testimonials.items[index];
           return {
-            name: getNonEmptyString(localized.name) ?? fallbackItem?.name ?? "",
-            role: getNonEmptyString(localized.role) ?? fallbackItem?.role ?? "",
-            quote: getNonEmptyString(localized.quote) ?? fallbackItem?.quote ?? "",
+            name: normalizePlainText(localized.name) ?? fallbackItem?.name ?? "",
+            role: normalizePlainText(localized.role) ?? fallbackItem?.role ?? "",
+            quote: normalizePlainText(localized.quote) ?? fallbackItem?.quote ?? "",
           };
         });
       }
@@ -880,14 +888,14 @@ export async function getNewsList(
         return {
           slug: String(record.slug ?? ""),
           date: formatPublishedDate(record.published_at),
-          title: String(localized.title ?? ""),
+          title: normalizePlainText(localized.title) ?? "",
           summary: normalizeSummaryText(localized.summary),
           content: parsedContent.content,
           contentHtml: parsedContent.contentHtml,
           image: imageSrc
             ? {
                 src: imageSrc,
-                alt: `${String(localized.title ?? "")} cover image`,
+                alt: `${normalizePlainText(localized.title) ?? ""} cover image`,
               }
             : undefined,
         };

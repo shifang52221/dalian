@@ -683,6 +683,85 @@ describe("mapLocaleRecord", () => {
     });
   });
 
+  it("strips html wrappers from homepage card text fields", async () => {
+    const collections: Record<string, Array<Record<string, unknown>>> = {
+      site_settings: [],
+      home_sections: [],
+      home_hero: [],
+      home_about: [],
+      capabilities: [
+        {
+          title_en: "<p>Submerged-Arc Cladding</p>",
+          description_en:
+            "<p>Suitable for new production and repair of key roller components.</p>",
+          sort_order: 1,
+          is_published: true,
+        },
+      ],
+      advantages: [
+        {
+          title_en: "<p>Support for Global Clients</p>",
+          description_en:
+            "<p>Serving domestic and international steel enterprises and equipment manufacturers.</p>",
+          sort_order: 1,
+          is_published: true,
+        },
+      ],
+      product_cases: [
+        {
+          category_en: "<p>Other Products</p>",
+          description_en:
+            "<p>Including hoppers, flanges, shaft sleeves, valves, and rotor repair.</p>",
+          tags_en: ["Wear-resistant layers"],
+          sort_order: 1,
+          is_published: true,
+        },
+      ],
+      cooperation_highlights: [
+        {
+          name_en: "<p>Material and process matching</p>",
+          role_en: "<p>Selection based on real operating conditions</p>",
+          quote_en:
+            "<p>We match materials, surface processes, and heat-treatment routes.</p>",
+          sort_order: 1,
+          is_published: true,
+        },
+      ],
+      news: [],
+    };
+
+    const client = {
+      collection(name: string) {
+        return {
+          async getFullList() {
+            return collections[name] ?? [];
+          },
+        };
+      },
+    };
+
+    const result = await getHomePageContent("en", client as never);
+
+    expect(result.capabilities.items[0]).toMatchObject({
+      title: "Submerged-Arc Cladding",
+      description: "Suitable for new production and repair of key roller components.",
+    });
+    expect(result.advantages.items[0]).toMatchObject({
+      title: "Support for Global Clients",
+      description:
+        "Serving domestic and international steel enterprises and equipment manufacturers.",
+    });
+    expect(result.projects.categories[0]).toMatchObject({
+      title: "Other Products",
+      description: "Including hoppers, flanges, shaft sleeves, valves, and rotor repair.",
+    });
+    expect(result.testimonials.items[0]).toMatchObject({
+      name: "Material and process matching",
+      role: "Selection based on real operating conditions",
+      quote: "We match materials, surface processes, and heat-treatment routes.",
+    });
+  });
+
   it("keeps homepage fallback content when new cms collections are unavailable", async () => {
     const client = {
       collection() {
