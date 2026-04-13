@@ -1,6 +1,8 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 
+const cmsAdminKeys = new Set(["PB_ADMIN_EMAIL", "PB_ADMIN_PASSWORD"]);
+
 function parseEnvLine(line) {
   const trimmed = line.trim();
   if (!trimmed || trimmed.startsWith("#")) {
@@ -36,8 +38,23 @@ function parseEnvLine(line) {
   return [key, value];
 }
 
+function isProductionLikeBaseDir(baseDir) {
+  return String(baseDir).replace(/\\/g, "/").startsWith("/www/wwwroot/");
+}
+
+function isProductionLikeEnv(baseDir) {
+  const envMarkers = [process.env.CMS_ENV, process.env.NODE_ENV]
+    .map((value) => String(value ?? "").trim().toLowerCase())
+    .filter(Boolean);
+
+  return envMarkers.includes("production") || isProductionLikeBaseDir(baseDir);
+}
+
 export async function loadLocalEnv(baseDir = process.cwd()) {
   const envPath = path.join(baseDir, ".env");
+  const allowLocalAdminEnv = String(process.env.CMS_ALLOW_LOCAL_ADMIN_ENV ?? "").trim()
+    .toLowerCase() === "true";
+  const shouldLoadSensitiveCmsAdminKeys = allowLocalAdminEnv || !isProductionLikeEnv(baseDir);
 
   let fileContents;
   try {
@@ -57,6 +74,10 @@ export async function loadLocalEnv(baseDir = process.cwd()) {
     }
 
     const [key, value] = parsed;
+    if (cmsAdminKeys.has(key) && !shouldLoadSensitiveCmsAdminKeys) {
+      continue;
+    }
+
     if (!Object.prototype.hasOwnProperty.call(process.env, key)) {
       process.env[key] = value;
     }

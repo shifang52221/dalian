@@ -15,13 +15,17 @@
 
 1. Install dependencies with `npm install`
 2. Create a local `.env` from `.env.example`
-3. Fill these environment variables in `.env` or the deployment environment:
+3. For local development, fill these environment variables in `.env`:
    - `PUBLIC_POCKETBASE_URL`
    - `PB_ADMIN_EMAIL`
    - `PB_ADMIN_PASSWORD`
-4. Start PocketBase on a long-running host
-5. Build the frontend with `npm run build`
-6. Start the SSR server with `node dist/server/entry.mjs`
+4. For production, set these environment variables in the shell, PM2, or Baota environment:
+   - `PUBLIC_POCKETBASE_URL`
+   - `PB_ADMIN_EMAIL`
+   - `PB_ADMIN_PASSWORD`
+5. Start PocketBase on a long-running host
+6. Build the frontend with `npm run build`
+7. Start the SSR server with `node dist/server/entry.mjs`
 
 ## PocketBase Initialization
 
@@ -75,7 +79,12 @@ After running `npm run cms:setup`, verify these collections exist in PocketBase:
 ## Known Operational Notes
 
 - `npm run cms:check` cannot pass until the required environment variables are present
-- `npm run cms:check`, `npm run cms:setup`, and `npm run cms:seed` automatically read the project-root `.env` file before falling back to shell-provided environment variables
+- `npm run cms:check`, `npm run cms:setup`, and `npm run cms:seed` can still read
+  `PUBLIC_POCKETBASE_URL` from the project-root `.env` file
+- In production-like environments, those scripts no longer read `PB_ADMIN_EMAIL` and
+  `PB_ADMIN_PASSWORD` from project-root `.env` by default
+- Use `CMS_ALLOW_LOCAL_ADMIN_ENV=true` only when you intentionally want to override that safety
+  behavior
 - Astro blocks cross-site form submissions by default, so API verification should be done from the site itself or with a matching same-origin request setup
 - This workspace currently does not expose a `.git` repository, so git-based history and branch checks are unavailable here
 - Daily CMS publishing guide for operators: [cms-publishing-guide.md](/f:/www/www13dalian/docs/cms-publishing-guide.md)

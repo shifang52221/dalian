@@ -7,6 +7,9 @@ const trackedKeys = [
   "PUBLIC_POCKETBASE_URL",
   "PB_ADMIN_EMAIL",
   "PB_ADMIN_PASSWORD",
+  "CMS_ENV",
+  "NODE_ENV",
+  "CMS_ALLOW_LOCAL_ADMIN_ENV",
 ];
 
 describe("loadLocalEnv", () => {
@@ -56,6 +59,58 @@ describe("loadLocalEnv", () => {
       await loadLocalEnv(dir);
 
       expect(process.env.PB_ADMIN_EMAIL).toBe("shell@example.com");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("does not load cms admin credentials from .env in production mode", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "www13dalian-env-"));
+
+    try {
+      process.env.CMS_ENV = "production";
+      await writeFile(
+        join(dir, ".env"),
+        [
+          "PUBLIC_POCKETBASE_URL=http://127.0.0.1:8090",
+          "PB_ADMIN_EMAIL=admin@example.com",
+          "PB_ADMIN_PASSWORD=change-me",
+        ].join("\n"),
+        "utf8",
+      );
+
+      const { loadLocalEnv } = await import("../../scripts/load-env.mjs");
+      await loadLocalEnv(dir);
+
+      expect(process.env.PUBLIC_POCKETBASE_URL).toBe("http://127.0.0.1:8090");
+      expect(process.env.PB_ADMIN_EMAIL).toBeUndefined();
+      expect(process.env.PB_ADMIN_PASSWORD).toBeUndefined();
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("allows explicit local admin env loading override in production mode", async () => {
+    const dir = await mkdtemp(join(tmpdir(), "www13dalian-env-"));
+
+    try {
+      process.env.CMS_ENV = "production";
+      process.env.CMS_ALLOW_LOCAL_ADMIN_ENV = "true";
+      await writeFile(
+        join(dir, ".env"),
+        [
+          "PUBLIC_POCKETBASE_URL=http://127.0.0.1:8090",
+          "PB_ADMIN_EMAIL=admin@example.com",
+          "PB_ADMIN_PASSWORD=change-me",
+        ].join("\n"),
+        "utf8",
+      );
+
+      const { loadLocalEnv } = await import("../../scripts/load-env.mjs");
+      await loadLocalEnv(dir);
+
+      expect(process.env.PB_ADMIN_EMAIL).toBe("admin@example.com");
+      expect(process.env.PB_ADMIN_PASSWORD).toBe("change-me");
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
